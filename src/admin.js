@@ -1239,7 +1239,19 @@
     const lastStatusText = document.getElementById('ai-last-status-text');
     const lastRunTime = document.getElementById('ai-last-run-time');
 
-    if (lastStatusText) lastStatusText.textContent = ai.lastStatus || 'Nonaktif';
+    if (lastStatusText) {
+      if (ai.enabled) {
+        lastStatusText.innerHTML = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>${ai.lastStatus || 'Aktif (Otomasi Berjalan Sesuai Jadwal)'}</span>
+        </span>`;
+      } else {
+        lastStatusText.innerHTML = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+          <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+          <span>${ai.lastStatus || 'Nonaktif (Dimatikan oleh Admin)'}</span>
+        </span>`;
+      }
+    }
     if (lastRunTime) {
       lastRunTime.textContent = ai.lastRun ? new Date(ai.lastRun).toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' }) : 'Belum pernah dijalankan';
     }
@@ -1279,8 +1291,20 @@
   }
 
   function collectAiAutomationData() {
-    const isEnabled = Boolean(document.getElementById('ai-master-toggle')?.checked);
+    const toggle = document.getElementById('ai-master-toggle');
+    const isEnabled = Boolean(toggle && toggle.checked);
     const existing = currentData?.aiAutomation || {};
+
+    let statusText = '';
+    if (isEnabled) {
+      if (existing.lastRun) {
+        statusText = `Aktif (Terakhir dioptimasi ${new Date(existing.lastRun).toLocaleDateString('id-ID')})`;
+      } else {
+        statusText = 'Aktif (Menunggu jadwal optimasi pertama)';
+      }
+    } else {
+      statusText = 'Nonaktif (Dimatikan oleh admin)';
+    }
 
     return {
       enabled: isEnabled,
@@ -1294,26 +1318,46 @@
       autoUpdateAiSummary: Boolean(document.getElementById('ai-update-ai-summary-check')?.checked),
       autoUpdateFaq: Boolean(document.getElementById('ai-update-faq-check')?.checked),
       lastRun: existing.lastRun || null,
-      lastStatus: existing.lastStatus || (isEnabled ? 'Aktif (Menunggu jadwal berikutnya)' : 'Nonaktif')
+      lastStatus: statusText
     };
   }
 
   // Bind Event Listeners Modul AI
   const aiMasterToggle = document.getElementById('ai-master-toggle');
+  const aiToggleLabel = document.getElementById('ai-toggle-label');
+
   if (aiMasterToggle) {
     aiMasterToggle.addEventListener('change', () => {
       const isEnabled = aiMasterToggle.checked;
       updateAiMasterToggleUI(isEnabled);
+
+      // Sinkronkan ke objek data di memori seketika
+      if (currentData) {
+        if (!currentData.aiAutomation) currentData.aiAutomation = {};
+        currentData.aiAutomation.enabled = isEnabled;
+        currentData.aiAutomation.lastStatus = isEnabled
+          ? 'Aktif (Menunggu jadwal berikutnya)'
+          : 'Nonaktif (Dimatikan oleh admin)';
+        updateAiStatusUI(currentData.aiAutomation);
+      }
+
       if (isEnabled) {
         const key = getVal('ai-api-key-input', '').trim();
         if (!key) {
-          showToast('⚠️ Mohon isi API Key terlebih dahulu agar AI dapat bekerja!', false, '⚠️');
+          showToast('⚠️ Jangan lupa isi API Key Anda agar AI dapat mengeksekusi!', false, '⚠️');
         } else {
-          showToast('🟢 Otomasi AI SEO diaktifkan! Jangan lupa klik Simpan Semua.', true, '🤖');
+          showToast('🟢 Otomasi AI SEO diaktifkan! Klik Simpan untuk menerapkan.', true, '🤖');
         }
       } else {
         showToast('⚪ Otomasi AI SEO dinonaktifkan.', true, '⏸️');
       }
+    });
+  }
+
+  if (aiToggleLabel && aiMasterToggle) {
+    aiToggleLabel.addEventListener('click', () => {
+      aiMasterToggle.checked = !aiMasterToggle.checked;
+      aiMasterToggle.dispatchEvent(new Event('change'));
     });
   }
 
@@ -1334,8 +1378,19 @@
 
   const btnSaveAiConfig = document.getElementById('btn-save-ai-config');
   if (btnSaveAiConfig) {
-    btnSaveAiConfig.addEventListener('click', () => {
-      saveAllData();
+    btnSaveAiConfig.addEventListener('click', async () => {
+      btnSaveAiConfig.disabled = true;
+      const origHtml = btnSaveAiConfig.innerHTML;
+      btnSaveAiConfig.innerHTML = `
+        <svg class="w-4 h-4 animate-spin text-white inline-block mr-1" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+        <span>Menyimpan Pengaturan AI...</span>
+      `;
+      try {
+        await saveAllData();
+      } finally {
+        btnSaveAiConfig.disabled = false;
+        btnSaveAiConfig.innerHTML = origHtml;
+      }
     });
   }
 

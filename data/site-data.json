@@ -348,7 +348,7 @@
     "autoUpdateAiSummary": true,
     "autoUpdateFaq": true,
     "lastRun": null,
-    "lastStatus": "Nonaktif (Belum pernah dijalankan)"
+    "lastStatus": "Nonaktif (Dimatikan oleh admin)"
   },
   "adminPassword": "admin123"
 }

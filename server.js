@@ -194,7 +194,7 @@ const server = http.createServer((req, res) => {
     const headers = { 'Content-Type': contentType };
 
     // Proteksi SEO: Jangan biarkan admin.html atau data sensitif diindeks oleh crawler
-    if (pathname === '/admin' || pathname === '/admin/' || pathname === '/admin.html' || pathname.startsWith('/data/') || pathname.startsWith('/api/')) {
+    if (pathname === '/admin' || pathname === '/admin/' || pathname === '/admin.html' || pathname.startsWith('/data/') || pathname.startsWith('/api/') || pathname.includes('admin.js')) {
       headers['X-Robots-Tag'] = 'noindex, nofollow, noarchive, nosnippet';
       headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate';
     }
