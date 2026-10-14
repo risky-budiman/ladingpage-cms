@@ -1191,6 +1191,48 @@
     if (faqCheck) faqCheck.checked = ai.autoUpdateFaq !== false;
 
     updateAiStatusUI(ai);
+    renderAiHistoryTable(ai.history || []);
+  }
+
+  function renderAiHistoryTable(history) {
+    const tbody = document.getElementById('ai-history-table-body');
+    const countEl = document.getElementById('ai-history-count');
+    if (!tbody) return;
+
+    if (!Array.isArray(history) || history.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Belum ada riwayat eksekusi AI. Klik tombol di atas untuk menjalankan optimasi pertama kali.</td></tr>`;
+      if (countEl) countEl.textContent = '0 Log';
+      return;
+    }
+
+    if (countEl) countEl.textContent = `${history.length} Log`;
+
+    tbody.innerHTML = history.map((h, i) => `
+      <tr class="hover:bg-slate-50 transition-colors ${i === 0 ? 'bg-emerald-50/50' : ''}">
+        <td class="p-3 font-mono text-[11px] whitespace-nowrap">
+          <div class="font-bold text-slate-800">${h.formattedDate || '-'}</div>
+          <div class="text-slate-400">${h.formattedTime || '-'}</div>
+        </td>
+        <td class="p-3">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-200">
+            ${h.modelUsed || '-'}
+          </span>
+        </td>
+        <td class="p-3 whitespace-nowrap">
+          <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            ${h.status || 'Sukses'}
+          </span>
+        </td>
+        <td class="p-3 max-w-[220px]">
+          <p class="font-bold text-slate-900 truncate" title="${h.siteTitle || '-'}">${h.siteTitle || '-'}</p>
+          <p class="text-[11px] text-slate-500 truncate" title="${h.metaDescription || '-'}">${h.metaDescription || '-'}</p>
+        </td>
+        <td class="p-3 max-w-[200px]">
+          <p class="text-slate-700 truncate" title="${h.newFaq || '-'}">${h.newFaq ? '❓ ' + h.newFaq : '-'}</p>
+        </td>
+      </tr>
+    `).join('');
   }
 
   function updateAiMasterToggleUI(isEnabled) {
@@ -1267,12 +1309,12 @@
 
     if (provider === 'gemini') {
       modelSelect.innerHTML = `
-        <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest (Paling Cepat &amp; Stabil)</option>
+        <option value="gemini-3.1-flash-lite-preview">gemini-3.1-flash-lite-preview (Rekomendasi 2026 - Super Cepat ~1.9s &amp; Stabil)</option>
+        <option value="gemini-3.8-flash">gemini-3.8-flash (Model Terbaru Google AI)</option>
+        <option value="gemini-3.5-flash">gemini-3.5-flash</option>
+        <option value="gemini-flash-latest">gemini-flash-latest</option>
+        <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest</option>
         <option value="gemini-1.5-flash">gemini-1.5-flash</option>
-        <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-        <option value="gemini-2.0-flash">gemini-2.0-flash</option>
-        <option value="gemini-1.5-pro-latest">gemini-1.5-pro-latest (Analisis Mendalam)</option>
-        <option value="gemini-pro">gemini-pro</option>
       `;
       if (helpLink) {
         helpLink.href = 'https://aistudio.google.com/app/apikey';
@@ -1434,12 +1476,17 @@
         if (aiModalProgress) aiModalProgress.style.width = '90%';
       }, 2800);
 
+      const runController = new AbortController();
+      const runTimeout = setTimeout(() => runController.abort(), 28000);
+
       try {
         const res = await fetch('/api/ai-optimize', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: runController.signal,
           body: JSON.stringify({ config })
         });
+        clearTimeout(runTimeout);
 
         const data = await res.json();
         if (!res.ok || !data.success) {
@@ -1458,7 +1505,7 @@
           let faqHtml = '';
           if (Array.isArray(data.aiResult.suggestedFaq) && data.aiResult.suggestedFaq.length > 0) {
             faqHtml = `<div class="mt-2 pt-2 border-t border-emerald-200">
-              <span class="font-bold text-emerald-900">Pertanyaan FAQ Baru yang Ditambahkan:</span>
+              <span class="font-bold text-emerald-900">Pertanyaan FAQ Baru yang Ditambahkan ke Website:</span>
               <p class="font-semibold text-slate-800">Q: ${data.aiResult.suggestedFaq[0].question}</p>
               <p class="text-slate-600">A: ${data.aiResult.suggestedFaq[0].answer}</p>
             </div>`;
@@ -1473,8 +1520,26 @@
             ${faqHtml}
           `;
 
-          // Auto-scroll ke hasil preview agar user langsung melihat
+          // Auto-scroll ke hasil preview agar user langsung melihat bukti
           outContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Sinkronkan ke objek memori currentData
+        if (currentData) {
+          if (!currentData.seo) currentData.seo = {};
+          if (data.aiResult.siteTitle) currentData.seo.siteTitle = data.aiResult.siteTitle;
+          if (data.aiResult.metaDescription) currentData.seo.metaDescription = data.aiResult.metaDescription;
+          if (data.aiResult.keywords) currentData.seo.keywords = data.aiResult.keywords;
+          if (data.aiResult.aiSearchSummary) currentData.seo.aiSearchSummary = data.aiResult.aiSearchSummary;
+          if (Array.isArray(data.aiResult.suggestedFaq) && data.aiResult.suggestedFaq.length > 0) {
+            if (!currentData.faq) currentData.faq = { items: [] };
+            if (!Array.isArray(currentData.faq.items)) currentData.faq.items = [];
+            currentData.faq.items.unshift({
+              id: 'faq_' + Date.now(),
+              question: data.aiResult.suggestedFaq[0].question,
+              answer: data.aiResult.suggestedFaq[0].answer
+            });
+          }
         }
 
         // Sinkronkan ke form SEO langsung jika dipilih
@@ -1496,10 +1561,19 @@
         config.lastStatus = `Sukses diperbarui oleh ${data.modelUsed || config.model}`;
         updateAiStatusUI(config);
 
+        // Perbarui Tabel Riwayat Audit AI
+        if (Array.isArray(data.history)) {
+          renderAiHistoryTable(data.history);
+        }
+
         showToast('⚡ AI Berhasil mengoptimasi SEO & konten website!', true, '🤖');
       } catch (err) {
+        clearTimeout(runTimeout);
         console.error('Error run AI now:', err);
-        alert('Gagal mengeksekusi AI Optimasi: ' + err.message);
+        const msg = err.name === 'AbortError' 
+          ? 'Koneksi ke API AI timeout (melebihi 28 detik). Silakan coba lagi.' 
+          : err.message;
+        alert('Gagal mengeksekusi AI Optimasi: ' + msg);
       } finally {
         clearTimeout(stepTimer1);
         clearTimeout(stepTimer2);
@@ -1509,6 +1583,52 @@
       }
     });
   }
+
+  // Bind Modal Bukti & Verifikasi Live Website
+  const btnVerifyLive = document.getElementById('btn-verify-live-site');
+  const modalVerifyLive = document.getElementById('modal-live-verification');
+  const btnCloseVerify1 = document.getElementById('btn-close-verify-modal');
+  const btnCloseVerify2 = document.getElementById('btn-close-verify-modal-2');
+
+  function openVerifyModal() {
+    if (!modalVerifyLive) return;
+    const seo = currentData?.seo || {};
+    const faqList = currentData?.faq?.items || currentData?.seo?.faqs || [];
+
+    const titleEl = document.getElementById('verify-live-title');
+    const descEl = document.getElementById('verify-live-desc');
+    const keyEl = document.getElementById('verify-live-keywords');
+    const sumEl = document.getElementById('verify-live-summary');
+    const faqEl = document.getElementById('verify-live-faq');
+
+    if (titleEl) titleEl.textContent = seo.siteTitle || '(Belum diset)';
+    if (descEl) descEl.textContent = seo.metaDescription || '(Belum diset)';
+    if (keyEl) keyEl.textContent = seo.keywords || '(Belum diset)';
+    if (sumEl) sumEl.textContent = seo.aiSearchSummary || '(Belum diset)';
+
+    if (faqEl) {
+      if (faqList.length > 0) {
+        const topFaq = faqList[0];
+        faqEl.innerHTML = `
+          <p class="font-bold text-slate-800">Q: ${topFaq.question}</p>
+          <p class="text-slate-600 mt-1 leading-relaxed">A: ${topFaq.answer}</p>
+          <div class="mt-2 text-[10px] text-slate-400 font-mono">Total ${faqList.length} FAQ aktif terpasang di landing page.</div>
+        `;
+      } else {
+        faqEl.innerHTML = '<p class="text-slate-400 italic">Belum ada FAQ.</p>';
+      }
+    }
+
+    modalVerifyLive.classList.remove('hidden');
+  }
+
+  function closeVerifyModal() {
+    if (modalVerifyLive) modalVerifyLive.classList.add('hidden');
+  }
+
+  if (btnVerifyLive) btnVerifyLive.addEventListener('click', openVerifyModal);
+  if (btnCloseVerify1) btnCloseVerify1.addEventListener('click', closeVerifyModal);
+  if (btnCloseVerify2) btnCloseVerify2.addEventListener('click', closeVerifyModal);
 
   // ==========================================
   // 6. SIMPAN SEMUA PERUBAHAN

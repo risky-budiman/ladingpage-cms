@@ -340,7 +340,7 @@
     "enabled": true,
     "provider": "gemini",
     "apiKey": "",
-    "model": "gemini-1.5-flash-latest",
+    "model": "gemini-3.1-flash-lite-preview",
     "frequency": "daily",
     "targetRegion": "Medan, Binjai, Langkat, Deli Serdang, Sumatera Utara",
     "focusTopics": "Internet Dedicated, Fiber Optic, Local Loop, Dark Fiber, Managed IT Solutions",

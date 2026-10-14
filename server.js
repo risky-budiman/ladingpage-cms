@@ -356,23 +356,31 @@ Output WAJIB berupa JSON MURNI (valid JSON) persis dengan format berikut tanpa t
     const apiKey = config.apiKey.trim();
     let requestedModel = (config.model || '').replace(/^models\//, '').trim();
 
-    // Urutan prioritas model text yang akan dicoba
+    // Urutan prioritas model text yang akan dicoba (dioptimalkan untuk API Google AI Studio 2026)
     let candidateModels = [
       requestedModel,
+      'gemini-3.1-flash-lite-preview',
+      'gemini-3.1-flash-lite',
+      'gemini-3.8-flash',
+      'gemini-3.5-flash',
+      'gemini-flash-latest',
       'gemini-1.5-flash-latest',
       'gemini-1.5-flash',
-      'gemini-2.0-flash',
       'gemini-2.5-flash',
-      'gemini-1.5-flash-8b',
-      'gemini-1.5-pro-latest',
-      'gemini-1.5-pro',
-      'gemini-pro'
+      'gemini-2.0-flash',
+      'gemini-pro-latest'
     ].filter(Boolean);
     candidateModels = [...new Set(candidateModels)];
 
     // Coba query ListModels dari Google untuk mendapatkan model teks spesifik yang diizinkan untuk API Key ini
     try {
-      const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
+      const controller = new AbortController();
+      const listTimeout = setTimeout(() => controller.abort(), 5000);
+      const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`, {
+        signal: controller.signal
+      });
+      clearTimeout(listTimeout);
+
       if (listRes.ok) {
         const listData = await listRes.json();
         if (Array.isArray(listData.models) && listData.models.length > 0) {
@@ -386,77 +394,81 @@ Output WAJIB berupa JSON MURNI (valid JSON) persis dengan format berikut tanpa t
                      !lower.includes('audio') && 
                      !lower.includes('embed') && 
                      !lower.includes('image') && 
-                     !lower.includes('vision');
+                     !lower.includes('vision') &&
+                     !lower.includes('clip') &&
+                     !lower.includes('transcribe');
             });
 
           if (supported.length > 0) {
-            // Prioritaskan model flash teks murni
-            const flashModels = supported.filter(m => m.includes('flash'));
-            const otherModels = supported.filter(m => !m.includes('flash'));
-            candidateModels = [...new Set([requestedModel, ...flashModels, ...otherModels, ...candidateModels].filter(Boolean))];
+            // Prioritaskan model flash-lite dan flash teks murni
+            const flashLite = supported.filter(m => m.includes('flash-lite'));
+            const flash = supported.filter(m => m.includes('flash') && !m.includes('flash-lite'));
+            const other = supported.filter(m => !m.includes('flash'));
+            candidateModels = [...new Set([requestedModel, ...flashLite, ...flash, ...candidateModels, ...other].filter(Boolean))];
           }
         }
       }
     } catch (e) {
-      console.warn('Gagal memanggil listModels Gemini, lanjut dengan kandidat standar:', e.message);
+      console.warn('Gagal query listModels Gemini (timeout/network), lanjut dengan kandidat terbaik:', e.message);
     }
 
-    // Pastikan tidak ada model TTS di kandidat akhir
+    // Pastikan tidak ada model audio/TTS/embed di kandidat akhir
     candidateModels = candidateModels.filter(name => {
       const lower = name.toLowerCase();
-      return !lower.includes('tts') && !lower.includes('audio') && !lower.includes('embed');
+      return !lower.includes('tts') && !lower.includes('audio') && !lower.includes('embed') && !lower.includes('image');
     });
 
     let lastError = null;
     let success = false;
 
-    // Iterasi model-model kandidat dan versi API (v1beta & v1)
+    // Iterasi model kandidat teks dengan timeout per-request (max 10s per model)
     for (const modelToTry of candidateModels) {
-      for (const apiVer of ['v1beta', 'v1']) {
-        try {
-          const endpoint = `https://generativelanguage.googleapis.com/${apiVer}/models/${modelToTry}:generateContent?key=${encodeURIComponent(apiKey)}`;
-          
-          const res = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: {
-                responseMimeType: 'application/json',
-                temperature: 0.7
-              }
-            })
-          });
+      try {
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelToTry}:generateContent?key=${encodeURIComponent(apiKey)}`;
+        
+        const controller = new AbortController();
+        const reqTimeout = setTimeout(() => controller.abort(), 10000); // Max 10 detik per request
 
-          const resData = await res.json();
-          if (resData.error) {
-            lastError = new Error(`Google Gemini Error (${modelToTry}): ${resData.error.message || JSON.stringify(resData.error)}`);
-            // Jika error adalah API key tidak valid / permission denied global, langsung laporkan
-            if (resData.error.message?.includes('API_KEY_INVALID') || resData.error.message?.includes('API key not valid')) {
-              throw lastError;
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              responseMimeType: 'application/json',
+              temperature: 0.7
             }
-            // Untuk error per-model (misal 404 not found, modality not supported, etc.), lanjutkan ke model berikutnya!
-            console.log(`[Gemini] Model ${modelToTry} (${apiVer}) gagal: ${resData.error.message}. Mencoba model alternatif...`);
-            continue;
-          }
+          })
+        });
+        clearTimeout(reqTimeout);
 
-          rawJsonText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (rawJsonText) {
-            success = true;
-            config.model = modelToTry; // Simpan model yang sukses digunakan
-            console.log(`[Gemini] Sukses menggunakan model: ${modelToTry} (${apiVer})`);
-            break;
+        const resData = await res.json();
+        if (resData.error) {
+          lastError = new Error(`Google Gemini Error (${modelToTry}): ${resData.error.message || JSON.stringify(resData.error)}`);
+          // Jika error adalah API key salah / invalid key, langsung stop
+          if (resData.error.message?.includes('API_KEY_INVALID') || resData.error.message?.includes('API key not valid')) {
+            throw lastError;
           }
-        } catch (err) {
-          lastError = err;
-          if (err.message?.includes('API_KEY_INVALID') || err.message?.includes('API key not valid')) {
-            throw err;
-          }
-          console.log(`[Gemini] Error mencoba ${modelToTry} (${apiVer}): ${err.message}. Mencoba model alternatif...`);
+          console.log(`[Gemini] Model ${modelToTry} gagal (${res.status}): ${resData.error.message}. Mencoba model alternatif...`);
           continue;
         }
+
+        rawJsonText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (rawJsonText) {
+          success = true;
+          config.model = modelToTry; // Simpan model yang sukses digunakan
+          console.log(`[Gemini] Sukses eksekusi menggunakan model: ${modelToTry}`);
+          break;
+        }
+      } catch (err) {
+        lastError = err;
+        if (err.message?.includes('API_KEY_INVALID') || err.message?.includes('API key not valid')) {
+          throw err;
+        }
+        console.log(`[Gemini] Error mencoba ${modelToTry}: ${err.message}. Mencoba alternatif...`);
+        continue;
       }
-      if (success) break;
     }
 
     if (!success) {
@@ -519,15 +531,18 @@ Output WAJIB berupa JSON MURNI (valid JSON) persis dengan format berikut tanpa t
   }
 
   if (config.autoUpdateFaq !== false && Array.isArray(aiResult.suggestedFaq) && aiResult.suggestedFaq.length > 0) {
+    if (!currentData.seo.faqs) currentData.seo.faqs = [];
     aiResult.suggestedFaq.forEach(faqItem => {
       if (faqItem.question && faqItem.answer) {
         const exists = currentData.faq.items.some(f => f.question.toLowerCase().trim() === faqItem.question.toLowerCase().trim());
         if (!exists) {
-          currentData.faq.items.unshift({
+          const newFaqObj = {
             id: 'faq_' + Date.now() + Math.random().toString(36).substring(2, 6),
             question: faqItem.question,
             answer: faqItem.answer
-          });
+          };
+          currentData.faq.items.unshift(newFaqObj);
+          currentData.seo.faqs.unshift({ question: faqItem.question, answer: faqItem.answer });
         }
       }
     });
@@ -546,7 +561,28 @@ Output WAJIB berupa JSON MURNI (valid JSON) persis dengan format berikut tanpa t
   currentData.aiAutomation.autoUpdateMeta = config.autoUpdateMeta !== false;
   currentData.aiAutomation.autoUpdateAiSummary = config.autoUpdateAiSummary !== false;
   currentData.aiAutomation.lastRun = now.toISOString();
-  currentData.aiAutomation.lastStatus = `Sukses diperbarui oleh AI (${provider.toUpperCase()}) pada ${now.toLocaleString('id-ID')}`;
+  currentData.aiAutomation.lastStatus = `Sukses diperbarui oleh AI (${config.model || provider}) pada ${now.toLocaleString('id-ID')}`;
+
+  // Audit Trail: Simpan Riwayat Eksekusi AI (Maksimal 10 log terakhir)
+  if (!Array.isArray(currentData.aiAutomation.history)) {
+    currentData.aiAutomation.history = [];
+  }
+  currentData.aiAutomation.history.unshift({
+    timestamp: now.toISOString(),
+    formattedDate: now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+    formattedTime: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
+    modelUsed: config.model,
+    provider: provider,
+    status: 'Sukses (200 OK)',
+    siteTitle: aiResult.siteTitle || '-',
+    metaDescription: (aiResult.metaDescription || '-').slice(0, 100) + '...',
+    keywordsCount: (aiResult.keywords || '').split(',').length,
+    newFaq: aiResult.suggestedFaq?.[0]?.question || null
+  });
+  currentData.aiAutomation.history = currentData.aiAutomation.history.slice(0, 10);
+
+  // Tandai timestamp di SEO agar front-end bisa memverifikasi
+  currentData.seo.lastAiOptimized = now.toISOString();
 
   // Buat backup snapshot & tulis data baru
   const timestamp = now.toISOString().replace(/[:.]/g, '-');
@@ -560,7 +596,9 @@ Output WAJIB berupa JSON MURNI (valid JSON) persis dengan format berikut tanpa t
     success: true,
     message: currentData.aiAutomation.lastStatus,
     aiResult,
-    lastRun: currentData.aiAutomation.lastRun
+    modelUsed: config.model,
+    lastRun: currentData.aiAutomation.lastRun,
+    history: currentData.aiAutomation.history
   };
 }
 

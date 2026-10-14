@@ -40,16 +40,17 @@
       }
     }
 
-    // 2. Cek API backend server (jika server Node.js aktif)
+    // 2. Cek API backend server (jika server Node.js aktif - Single Source of Truth)
     try {
       const res = await fetch(API_CONTENT_URL);
       if (res.ok) {
         const json = await res.json();
-        // Simpan hanya jika local belum meng-override atau ingin sinkron
-        if (!localSaved) {
-          siteData = json;
-          applyDataToDOM(siteData);
-        }
+        siteData = json;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(json));
+        } catch (e) {}
+        console.log('✅ CMS: Memuat dan menyinkronkan data langsung dari server backend');
+        applyDataToDOM(siteData);
         return siteData;
       }
     } catch (e) {
@@ -59,7 +60,7 @@
     // 3. Fallback: Cek file static JSON (data/site-data.json)
     if (!siteData) {
       try {
-        const res = await fetch(STATIC_JSON_URL);
+        const res = await fetch(STATIC_JSON_URL + '?t=' + Date.now());
         if (res.ok) {
           siteData = await res.json();
           console.log('✅ CMS: Memuat data dari data/site-data.json');
@@ -87,7 +88,7 @@
     applyServices(data.services, data.contact);
     applyGallery(data.gallery);
     applyAbout(data.about);
-    applyFAQ(data.seo ? data.seo.faqs : null);
+    applyFAQ(data.faq?.items || data.faq || (data.seo ? data.seo.faqs : null));
     applyCtaBanner(data.ctaBanner);
     applyContact(data.contact);
     applyFooter(data.footer, data.navbar, data.contact);
