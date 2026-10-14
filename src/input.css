@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    @apply font-sans text-gray-800 antialiased;
+  }
+}
+
+@layer components {
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(90deg, #0070f3, #00b894);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Partner slider */
+  .slide-track {
+    display: flex;
+    width: calc(200px * 10);
+    animation: logo-scroll 25s linear infinite;
+  }
+
+  @media (max-width: 639px) {
+    .slide-track {
+      width: calc(130px * 10);
+    }
+  }
+
+  /* Success message animation */
+  .success-msg {
+    animation: fadeInUp 0.5s ease forwards;
+  }
+}
+
+@keyframes logo-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+}

@@ -1,0 +1,340 @@
+{
+  "seo": {
+    "siteTitle": "PT Infra Digital Solusindo (IDS) — Solusi Jaringan, Internet & IT Medan",
+    "metaDescription": "PT Infra Digital Solusindo adalah penyedia infrastruktur jaringan fiber optik, internet dedicated, local loop, dark fiber, dan IT solution terpercaya di Medan, Binjai, Langkat dan sekitarnya.",
+    "keywords": "provider internet Medan, fiber optik Medan, internet kantor Medan, local loop Medan, dark fiber Binjai, IT solution Langkat, PT Infra Digital Solusindo, IDS internet, jaringan telekomunikasi Sumut",
+    "canonicalUrl": "https://ids.net.id/",
+    "author": "PT Infra Digital Solusindo",
+    "ogImage": "./images/logo.png",
+    "geoRegion": "ID-SU",
+    "geoPlacename": "Medan, Sumatera Utara",
+    "geoCoordinates": "3.5952, 98.6722",
+    "aiSearchSummary": "PT Infra Digital Solusindo (IDS) adalah perusahaan infrastruktur telekomunikasi dan teknologi jaringan yang melayani area Medan, Binjai, Langkat, dan sekitarnya dengan layanan fiber optic, internet dedicated, local loop, dark fiber, dan managed IT solutions.",
+    "faqs": [
+      {
+        "question": "Layanan apa saja yang disediakan oleh PT Infra Digital Solusindo (IDS)?",
+        "answer": "IDS menyediakan solusi konektivitas dan jaringan komprehensif meliputi Internet Dedicated, Fiber Optic Local Loop, Dark Fiber, serta Managed IT & Network Solutions untuk instansi, korporat, dan komunitas."
+      },
+      {
+        "question": "Area mana saja yang dijangkau oleh layanan IDS?",
+        "answer": "Cakupan layanan IDS saat ini menjangkau Kota Medan, Kota Binjai, Kabupaten Langkat, Kabupaten Deli Serdang, dan wilayah sekitarnya di Sumatera Utara."
+      },
+      {
+        "question": "Apakah IDS menyediakan survei dan konsultasi jaringan gratis?",
+        "answer": "Ya, kami menyediakan layanan konsultasi teknis dan survei lokasi secara gratis tanpa komitmen untuk membantu Anda menentukan spesifikasi jaringan yang paling optimal."
+      },
+      {
+        "question": "Bagaimana cara menghubungi atau berlangganan layanan IDS?",
+        "answer": "Anda dapat menghubungi tim customer service dan technical support kami langsung melalui WhatsApp di nomor 0811-3244-321 atau melalui form kontak di website."
+      }
+    ]
+  },
+  "navbar": {
+    "brandName": "IDS",
+    "logoUrl": "./images/logo.png",
+    "showCta": true,
+    "ctaText": "Hubungi Kami",
+    "ctaUrl": "#kontak",
+    "menuItems": [
+      {
+        "id": "m1",
+        "title": "Home",
+        "url": "#hero",
+        "isExternal": false
+      },
+      {
+        "id": "m2",
+        "title": "Layanan",
+        "url": "#layanan",
+        "isExternal": false
+      },
+      {
+        "id": "m3",
+        "title": "Galeri",
+        "url": "#galeri",
+        "isExternal": false
+      },
+      {
+        "id": "m4",
+        "title": "Tentang Kami",
+        "url": "#tentang",
+        "isExternal": false
+      },
+      {
+        "id": "m5",
+        "title": "FAQ",
+        "url": "#faq",
+        "isExternal": false
+      }
+    ]
+  },
+  "hero": {
+    "badgeText": "Infrastruktur Jaringan & Telekomunikasi Terpercaya",
+    "badgePulse": true,
+    "titlePrefix": "Infrastruktur Jaringan Andal untuk",
+    "titleHighlight1": "Komunitas",
+    "titleMid": "dan",
+    "titleHighlight2": "Bisnis Anda",
+    "description": "PT Infra Digital Solusindo menghadirkan solusi konektivitas fiber optik dan jaringan data yang cepat, stabil, andal, dan terjangkau di Sumatera Utara.",
+    "primaryBtnText": "Lihat Layanan Kami",
+    "primaryBtnUrl": "#layanan",
+    "secondaryBtnText": "Konsultasi Gratis",
+    "secondaryBtnUrl": "#kontak",
+    "stats": [
+      {
+        "id": "s1",
+        "value": "3+",
+        "label": "Kategori Layanan"
+      },
+      {
+        "id": "s2",
+        "value": "3 Kota",
+        "label": "Area Layanan"
+      },
+      {
+        "id": "s3",
+        "value": "24/7",
+        "label": "Dukungan Teknis"
+      }
+    ],
+    "heroImage": "./images/logo.png"
+  },
+  "partners": {
+    "sectionTitle": "Mitra & Teknologi Kami",
+    "logos": [
+      {
+        "name": "Huawei",
+        "url": "https://upload.wikimedia.org/wikipedia/en/0/04/Huawei_Standard_logo.svg"
+      },
+      {
+        "name": "ZTE",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/20/ZTE-logo.svg"
+      },
+      {
+        "name": "HSGQ",
+        "url": "https://cdn.brandfetch.io/id0ZE558ng/w/350/h/369/theme/dark/logo.png"
+      },
+      {
+        "name": "C-Data",
+        "url": "https://cdn.brandfetch.io/idk-jGOLa3/w/1131/h/1131/theme/dark/icon.jpeg"
+      },
+      {
+        "name": "Nokia",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Nokia_2023.svg"
+      }
+    ]
+  },
+  "advantages": {
+    "badge": "KEUNGGULAN",
+    "title": "Mengapa Memilih",
+    "highlight": "IDS?",
+    "subtitle": "Kami tidak sekadar menjual koneksi — kami membangun fondasi digital yang kokoh untuk komunitas dan bisnis Anda.",
+    "items": [
+      {
+        "id": "adv1",
+        "title": "Koneksi Super Cepat",
+        "colorScheme": "blue",
+        "iconType": "speed",
+        "description": "Jaringan fiber optik dengan bandwidth tinggi hingga 1 Gbps — streaming, server, cloud, dan kerja jarak jauh tanpa hambatan."
+      },
+      {
+        "id": "adv2",
+        "title": "Jaringan Andal & Stabil",
+        "colorScheme": "green",
+        "iconType": "shield",
+        "description": "Infrastruktur redundan dengan uptime tinggi. Gangguan minimal, dan tim teknis kami siap siaga 24 jam."
+      },
+      {
+        "id": "adv3",
+        "title": "Jangkauan Luas",
+        "colorScheme": "purple",
+        "iconType": "map",
+        "description": "Menjangkau Medan, Binjai, Langkat, dan wilayah sekitarnya — menghadirkan akses konektivitas merata untuk semua."
+      }
+    ]
+  },
+  "services": {
+    "title": "Solusi Layanan",
+    "highlight": "Konektivitas & IT",
+    "subtitle": "Dari koneksi lokal, internet berkecepatan tinggi, hingga infrastruktur enterprise — kami siapkan solusi jaringan yang tepat untuk skala kebutuhan Anda.",
+    "items": [
+      {
+        "id": "srv1",
+        "title": "Local Loop & Dedicated Internet",
+        "badge": "Terpopuler",
+        "colorScheme": "blue",
+        "iconType": "loop",
+        "description": "Koneksi jaringan data point-to-point dan akses internet dedicated dari titik POP ke lokasi pelanggan menggunakan fiber optik stabil.",
+        "waMessage": "Halo IDS, saya ingin menanyakan informasi mengenai layanan Local Loop & Dedicated Internet."
+      },
+      {
+        "id": "srv2",
+        "title": "Managed IT & Network Solution",
+        "badge": "Solusi Lengkap",
+        "colorScheme": "green",
+        "iconType": "monitor",
+        "description": "Solusi teknologi informasi menyeluruh — mulai dari perencanaan arsitektur jaringan, instalasi perangkat (router, switch, server), hingga maintenance berkala.",
+        "waMessage": "Halo IDS, saya ingin menanyakan informasi mengenai layanan IT & Network Solution."
+      },
+      {
+        "id": "srv3",
+        "title": "Dark Fiber & Backbone Infrastructure",
+        "badge": "Enterprise",
+        "colorScheme": "purple",
+        "iconType": "cable",
+        "description": "Sewa infrastruktur kabel fiber optik pasif untuk kebutuhan transmisi data berkapasitas sangat besar — aman, privat, dan efisien.",
+        "waMessage": "Halo IDS, saya ingin menanyakan informasi mengenai layanan Dark Fiber."
+      }
+    ]
+  },
+  "gallery": {
+    "title": "Galeri",
+    "highlight": "Kegiatan",
+    "subtitle": "Lihat langsung bagaimana tim teknisi kami membangun dan merawat infrastruktur jaringan di lapangan.",
+    "useApiFallback": false,
+    "items": [
+      {
+        "id": "gal1",
+        "title": "Penyambungan Fiber Optik (Splicing)",
+        "url": "./images/galery/splice.jpg",
+        "tag": "Maintenance"
+      },
+      {
+        "id": "gal2",
+        "title": "Pemasangan ODP (Optical Distribution Point)",
+        "url": "./images/galery/odp.jpg",
+        "tag": "Distribusi"
+      },
+      {
+        "id": "gal3",
+        "title": "Penarikan Kabel Fiber Optik",
+        "url": "./images/galery/penarikan.jpg",
+        "tag": "Instalasi"
+      },
+      {
+        "id": "gal4",
+        "title": "Pengukuran Redaman Kabel (OPM)",
+        "url": "./images/galery/opm.jpg",
+        "tag": "Quality Check"
+      },
+      {
+        "id": "gal5",
+        "title": "Instalasi Joint Closure",
+        "url": "./images/galery/join.jpg",
+        "tag": "Konektivitas"
+      },
+      {
+        "id": "gal6",
+        "title": "Pengecekan Jalur Kabel Optik",
+        "url": "./images/galery/kabel.jpg",
+        "tag": "Jaringan"
+      }
+    ]
+  },
+  "about": {
+    "title": "Tentang",
+    "highlight": "Kami",
+    "subtitle": "PT Infra Digital Solusindo adalah perusahaan penyedia infrastruktur jaringan dan solusi teknologi informasi terpadu — menghadirkan konektivitas digital yang cepat, stabil, dan terjangkau.",
+    "visi": "Menjadi mitra penyedia solusi infrastruktur jaringan dan teknologi digital terdepan di Indonesia — menghubungkan bisnis dan masyarakat dengan konektivitas merata.",
+    "misi": [
+      "Menyediakan layanan jaringan berkualitas tinggi dengan harga kompetitif",
+      "Membangun infrastruktur fiber optik handal dan berkelanjutan",
+      "Mendukung percepatan transformasi digital daerah Medan dan Sumatera Utara",
+      "Memberikan dukungan teknis responsif 24/7 demi kepuasan pelanggan"
+    ],
+    "nilai": [
+      {
+        "keyword": "Inovasi",
+        "desc": "Teknologi terdepan & mutakhir"
+      },
+      {
+        "keyword": "Keandalan",
+        "desc": "Uptime & stabilitas tinggi"
+      },
+      {
+        "keyword": "Komitmen",
+        "desc": "Kepuasan dan kenyamanan pelanggan"
+      },
+      {
+        "keyword": "Keberlanjutan",
+        "desc": "Digitalisasi jangka panjang untuk masyarakat"
+      }
+    ]
+  },
+  "ctaBanner": {
+    "title": "Siap Bangun Jaringan yang Lebih Baik?",
+    "subtitle": "Hubungi tim kami sekarang — konsultasi gratis, tanpa biaya, tanpa tekanan. Kami bantu temukan solusi jaringan terbaik untuk kebutuhan Anda.",
+    "primaryBtnText": "Daftar Sekarang",
+    "primaryBtnUrl": "#kontak",
+    "secondaryBtnText": "Lihat Layanan",
+    "secondaryBtnUrl": "#layanan"
+  },
+  "contact": {
+    "title": "Hubungi",
+    "highlight": "Kami",
+    "subtitle": "Ceritakan kebutuhan Anda — tim kami siap merespons dan memberikan solusi terbaik.",
+    "addressTitle": "Alamat Kantor",
+    "address": "Jl. Setia Budi, Medan Sunggal, Sumatera Utara",
+    "phone": "+62 8117 0 1000 17",
+    "waNumber": "628170100017",
+    "email": "info@ids.net.id",
+    "website": "www.ids.net.id",
+    "workHoursWeekday": "Senin – Jumat: 09:00 – 17:00 WIB",
+    "workHoursWeekend": "Sabtu – Minggu: Tutup (Layanan Darurat On-Call)",
+    "formHeading": "Konsultasi Cepat via WhatsApp",
+    "formSubmitText": "Kirim via WhatsApp"
+  },
+  "footer": {
+    "logoUrl": "./images/logo.png",
+    "logoAlt": "PT Infra Digital Solusindo",
+    "brandDescription": "PT Infra Digital Solusindo — penyedia solusi jaringan fiber optik, internet, dan IT terpercaya di Medan, Binjai, Langkat dan sekitarnya.",
+    "copyrightText": "PT Infra Digital Solusindo. All rights reserved.",
+    "showAdminLink": false,
+    "adminLinkText": "Login Admin Panel CMS",
+    "navTitle": "Navigasi",
+    "menuItems": [
+      {
+        "id": "fm1",
+        "title": "Home",
+        "url": "#hero"
+      },
+      {
+        "id": "fm2",
+        "title": "Layanan",
+        "url": "#layanan"
+      },
+      {
+        "id": "fm3",
+        "title": "Galeri",
+        "url": "#galeri"
+      },
+      {
+        "id": "fm4",
+        "title": "Tentang Kami",
+        "url": "#tentang"
+      },
+      {
+        "id": "fm5",
+        "title": "FAQ",
+        "url": "#faq"
+      },
+      {
+        "id": "fm6",
+        "title": "Webmail",
+        "url": "https://mail.ids.net.id"
+      }
+    ],
+    "hoursTitle": "Jam Kerja",
+    "hoursNote": "Dukungan NOC & teknisi siap 24/7 untuk monitoring gangguan",
+    "hoursWeekdayLabel": "Senin – Jumat",
+    "hoursWeekdayTime": "09:00 – 17:00 WIB",
+    "hoursWeekendLabel": "Sabtu – Minggu",
+    "hoursWeekendTime": "Tutup (Layanan Darurat On-Call)",
+    "contactTitle": "Kontak",
+    "website": "www.ids.net.id",
+    "address": "Jl. Setia Budi, Medan Sunggal, Sumatera Utara",
+    "phone": "+62 817 0 1000 17",
+    "email": "info@ids.net.id"
+  },
+  "adminPassword": "admin123"
+}

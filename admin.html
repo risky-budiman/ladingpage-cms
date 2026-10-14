@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin CMS Panel — PT Infra Digital Solusindo</title>
+  <!-- Pencegahan Pengindeksan Search Engine & AI Crawler (Privasi Akses Admin) -->
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet" />
+
+  <link rel="icon" href="./images/favicon.ico" />
+  <link rel="stylesheet" href="./dist/output.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen">
+  <!-- ========================
+         LOGIN OVERLAY / MODAL
+    ========================= -->
+  <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4 transition-all duration-300">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-100 max-w-md w-full p-8 text-center relative overflow-hidden animate-fade-in-up">
+      <!-- Glow background -->
+      <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10">
+        <img src="./images/logo.png" alt="IDS Logo" class="h-16 mx-auto mb-4 drop-shadow-sm" />
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-1">Admin Panel CMS</h2>
+        <p class="text-xs text-slate-500 mb-6">PT Infra Digital Solusindo — Kontrol Konten &amp; SEO</p>
+
+        <form id="login-form" class="space-y-4">
+          <div class="text-left">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2" for="admin-pin">Kata Sandi / PIN Admin</label>
+            <div class="relative">
+              <input type="password" id="admin-pin" placeholder="Masukkan PIN / Password (default: admin123)"
+                class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-sm font-medium pr-11"
+                required autofocus />
+              <button type="button" id="toggle-pwd-btn" class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 transition-colors" title="Lihat Password">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2">Password default: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-primary font-mono font-semibold">admin123</code></p>
+          </div>
+
+          <button type="submit"
+            class="w-full py-3.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dark transition-all shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-0.5 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+            Masuk ke Dashboard
+          </button>
+        </form>
+
+        <div class="mt-6 pt-5 border-t border-slate-100">
+          <a href="index.html" class="text-xs text-slate-500 hover:text-primary transition-colors flex items-center justify-center gap-1">
+            &larr; Kembali ke Landing Page Publik
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================
+         MAIN ADMIN LAYOUT
+    ========================= -->
+  <div id="admin-app" class="min-h-screen flex flex-col">
+    <!-- Top Navbar (Sticky) -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-4">
+        <a href="index.html" target="_blank" class="flex items-center gap-2" title="Lihat Website IDS">
+          <img src="./images/logo.png" alt="IDS Logo" class="h-9 sm:h-11" />
+        </a>
+        <div class="hidden sm:block border-l border-slate-200 pl-4">
+          <h1 class="text-base font-bold text-slate-900 leading-tight">Admin CMS Panel</h1>
+          <p class="text-[11px] text-slate-400 font-medium">PT Infra Digital Solusindo — Kontrol Konten &amp; Navigasi</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Status Server -->
+        <span id="server-status-pill" class="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 text-slate-600">
+          <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+          <span>Checking server...</span>
+        </span>
+
+        <!-- Lihat Live Website -->
+        <a href="index.html" target="_blank"
+          class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-50 hover:border-slate-300 transition-all">
+          <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          <span class="hidden sm:inline">Pratinjau</span> Website
+        </a>
+
+        <!-- Simpan Perubahan Button -->
+        <button id="save-all-btn"
+          class="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-primary text-white text-xs sm:text-sm font-bold hover:bg-primary-dark transition-all shadow-md shadow-blue-200 hover:shadow-lg active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Simpan Semua
+        </button>
+
+        <!-- Logout -->
+        <button id="logout-btn" title="Keluar dari Admin"
+          class="p-2 sm:p-2.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Navigation Tab Bar (Horizontal Scrollable) -->
+    <div class="lg:hidden bg-white border-b border-slate-200 px-4 py-2.5 overflow-x-auto flex gap-2 sticky top-[61px] z-30 shadow-xs custom-scrollbar">
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white" data-tab="tab-dashboard">Dashboard</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-navbar">Menu &amp; Navbar</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-services">Layanan &amp; Produk</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-seo">SEO &amp; AI</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-hero">Hero</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-partners">Mitra</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-advantages">Keunggulan</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-gallery">Galeri</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-about">Tentang Kami</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-faq">FAQ</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-contact">Kontak</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-backup">Backup</button>
+    </div>
+
+    <!-- Body Layout (Sidebar + Main Content side by side) -->
+    <div class="flex-1 flex flex-col lg:flex-row min-w-0">
+      <!-- Sidebar Navigasi Modul (Sticky dengan Internal Scroll jika Layar Pendek) -->
+      <aside class="w-64 flex-shrink-0 bg-white border-r border-slate-200 hidden lg:block select-none self-start sticky top-[65px] rounded-b-2xl border-b shadow-xs max-h-[calc(100vh-75px)] overflow-y-auto custom-scrollbar">
+        <div class="p-4 space-y-1">
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">Modul Kontrol CMS</p>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors active-tab bg-primary/10 text-primary" data-tab="tab-dashboard">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            Ringkasan Dashboard
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-navbar">
+            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+            Menu &amp; Navbar
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-services">
+            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            Layanan &amp; Produk
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-seo">
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            SEO &amp; AI Search Engine
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-hero">
+            <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Hero &amp; Header Banner
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-partners">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            Mitra &amp; Teknologi
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-advantages">
+            <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Keunggulan (Why Us)
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-gallery">
+            <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Galeri Kegiatan
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-about">
+            <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            Tentang Kami &amp; Profil
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-faq">
+            <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            FAQ &amp; Tanya Jawab
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-cta">
+            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+            CTA Banner
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-contact">
+            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            Kontak &amp; WhatsApp
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-footer">
+            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Footer &amp; Hak Cipta
+          </button>
+
+          <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-backup">
+            <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+            Backup &amp; Sinkronisasi
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content Area (Unified Normal Page Scroll) -->
+      <main class="flex-1 p-4 sm:p-8 min-w-0">
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed top-20 right-8 z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 pointer-events-none">
+          <div class="bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-semibold border border-slate-700">
+            <span id="toast-icon">✅</span>
+            <span id="toast-msg">Perubahan berhasil disimpan!</span>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 1: DASHBOARD OVERVIEW
+        ================================================== -->
+        <div id="tab-dashboard" class="tab-content space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900">Dashboard Kontrol CMS</h2>
+              <p class="text-sm text-slate-500">Kelola semua konten landing page IDS tanpa perlu coding secara manual.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="document.querySelector('[data-tab=\'tab-navbar\']').click()" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow hover:bg-blue-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Atur Menu Navbar
+              </button>
+              <button onclick="document.querySelector('[data-tab=\'tab-services\']').click()" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-primary text-white text-xs font-bold rounded-xl shadow hover:bg-primary-dark transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                Atur Layanan
+              </button>
+              <button onclick="document.querySelector('[data-tab=\'tab-seo\']').click()" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow hover:bg-emerald-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                Optimasi SEO &amp; AI
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Metrics -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 cursor-pointer hover:border-primary transition-all" onclick="document.querySelector('[data-tab=\'tab-navbar\']').click()">
+              <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400 font-semibold uppercase">Menu Navigasi</p>
+                <h3 id="stat-menu-count" class="text-2xl font-black text-slate-900">5</h3>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 cursor-pointer hover:border-primary transition-all" onclick="document.querySelector('[data-tab=\'tab-services\']').click()">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400 font-semibold uppercase">Produk / Layanan</p>
+                <h3 id="stat-service-count" class="text-2xl font-black text-slate-900">3</h3>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 cursor-pointer hover:border-primary transition-all" onclick="document.querySelector('[data-tab=\'tab-gallery\']').click()">
+              <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400 font-semibold uppercase">Koleksi Galeri</p>
+                <h3 id="stat-gallery-count" class="text-2xl font-black text-slate-900">6</h3>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 cursor-pointer hover:border-primary transition-all" onclick="document.querySelector('[data-tab=\'tab-seo\']').click()">
+              <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400 font-semibold uppercase">SEO &amp; AI Health</p>
+                <h3 class="text-2xl font-black text-emerald-600">100%</h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature Cards / Quick Access -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+                Kemudahan Pengelolaan Website
+              </h3>
+              <ul class="text-xs text-slate-600 space-y-2.5">
+                <li class="flex items-start gap-2">
+                  <span class="font-bold text-primary">✓</span>
+                  <span><strong>Menu Navbar Dinamis</strong>: Tambah, edit, geser urutan link ke atas/bawah, dan tentukan target halaman dengan bebas.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="font-bold text-primary">✓</span>
+                  <span><strong>Layanan Fleksibel</strong>: Bebas menentukan nama produk, deskripsi, paket internet, dan template pesan WhatsApp per layanan.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="font-bold text-primary">✓</span>
+                  <span><strong>Navigasi Mengikuti Scroll</strong>: Sidebar menu menempel rapi saat Anda menggulir halaman tanpa scrollbar terpisah yang sempit.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="font-bold text-primary">✓</span>
+                  <span><strong>Simpan Otomatis</strong>: Klik <em>"Simpan Semua"</em> dan perubahan langsung live ke website publik tanpa perlu restart.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="bg-gradient-to-br from-slate-900 to-blue-950 p-6 rounded-2xl shadow-sm text-white space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold flex items-center gap-2">
+                  <span class="text-amber-400">⚡</span>
+                  Status Optimasi SEO Google &amp; AI
+                </h3>
+                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-full">ACTIVE</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Website IDS telah dilengkapi dengan Schema JSON-LD berstandar Schema.org (<code class="text-amber-300">InternetServiceProvider</code>, <code class="text-amber-300">LocalBusiness</code>, <code class="text-amber-300">FAQPage</code>), Geotagging Sumatera Utara, serta Meta Tags yang dirancang khusus untuk memenangkan rangking Google One-Page dan Generative Engine Optimization (Perplexity, ChatGPT, Google AI Overviews).
+              </p>
+              <button onclick="document.querySelector('[data-tab=\'tab-seo\']').click()" class="text-xs font-semibold text-primary-light hover:underline inline-flex items-center gap-1">
+                Buka Pengaturan SEO &amp; Pratinjau Google &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Keamanan & Ganti Password Admin CMS -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-slate-900">Keamanan &amp; Ganti Password Admin CMS</h3>
+                  <p class="text-xs text-slate-500">Ubah PIN / kata sandi akses masuk panel CMS agar lebih aman.</p>
+                </div>
+              </div>
+            </div>
+
+            <form id="change-pwd-form" class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1" for="pwd-current">Password Saat Ini</label>
+                <input type="password" id="pwd-current" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary/20" placeholder="Password lama" required />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1" for="pwd-new">Password Baru</label>
+                <input type="password" id="pwd-new" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary/20" placeholder="Minimal 6 karakter" required minlength="6" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1" for="pwd-confirm">Konfirmasi Password Baru</label>
+                <input type="password" id="pwd-confirm" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary/20" placeholder="Ulangi password baru" required minlength="6" />
+              </div>
+              <div class="md:col-span-3 flex justify-end">
+                <button type="submit" class="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors flex items-center gap-2">
+                  <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  Simpan Password Baru
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 2: MENU & NAVBAR (KONTROL PENUH DARI CMS)
+        ================================================== -->
+        <div id="tab-navbar" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Manajemen Menu &amp; Navigasi Navbar</h2>
+            <p class="text-sm text-slate-500">Atur semua link navbar, urutan menu (naik/turun), logo brand, serta tombol ajakan bertindak (CTA) secara dinamis.</p>
+          </div>
+
+          <!-- Live Navbar Preview -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Pratinjau Tampilan Navbar Live</span>
+              <span class="text-[11px] text-blue-600 font-semibold">Tampilan Desktop</span>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img id="nav-preview-logo" src="./images/logo.png" alt="Logo" class="h-8 max-w-[120px] object-contain" />
+              </div>
+              <div id="nav-preview-links" class="hidden sm:flex items-center gap-5 text-xs font-medium text-slate-700">
+                <!-- Preview links -->
+              </div>
+              <div id="nav-preview-cta">
+                <span class="bg-primary text-white text-xs px-4 py-2 rounded-lg font-semibold shadow-xs">Hubungi Kami</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pengaturan Brand & Logo -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">Identitas Navbar &amp; Logo</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="nav-brand-name">Nama Brand / Inisial</label>
+                <input type="text" id="nav-brand-name" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" placeholder="IDS" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="nav-logo-url">Path Gambar Logo (cth: ./images/logo.png)</label>
+                <input type="text" id="nav-logo-url" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" />
+              </div>
+            </div>
+
+            <!-- Tombol CTA Navbar -->
+            <div class="border-t border-slate-100 pt-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Tombol CTA Navbar</h4>
+                <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-600">
+                  <input type="checkbox" id="nav-show-cta" class="w-4 h-4 rounded text-primary focus:ring-primary/20" checked />
+                  <span>Tampilkan Tombol CTA</span>
+                </label>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="nav-cta-text">Teks Tombol CTA</label>
+                  <input type="text" id="nav-cta-text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" placeholder="Hubungi Kami" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="nav-cta-url">Target Link CTA (cth: #kontak atau URL luar)</label>
+                  <input type="text" id="nav-cta-url" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" placeholder="#kontak" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daftar Menu Items Lengkap (Add / Reorder / Edit / Delete) -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Daftar Link Menu Navbar</h3>
+                <p class="text-xs text-slate-500">Gunakan tombol panah ▲ ▼ untuk memindahkan urutan posisi menu.</p>
+              </div>
+              <button type="button" id="add-menu-btn" class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary-dark transition-colors flex items-center gap-1.5 self-start">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Tambah Menu Baru
+              </button>
+            </div>
+
+            <!-- Quick Section Anchor Help -->
+            <div class="bg-blue-50/60 p-3 rounded-xl border border-blue-100 text-xs text-slate-600 flex flex-wrap items-center gap-2">
+              <span class="font-bold text-primary">Target Cepat Section:</span>
+              <span class="bg-white px-2 py-0.5 rounded border border-blue-200 font-mono text-[11px] text-blue-800">#hero</span> (Home)
+              <span class="bg-white px-2 py-0.5 rounded border border-blue-200 font-mono text-[11px] text-blue-800">#layanan</span> (Layanan)
+              <span class="bg-white px-2 py-0.5 rounded border border-blue-200 font-mono text-[11px] text-blue-800">#galeri</span> (Galeri)
+              <span class="bg-white px-2 py-0.5 rounded border border-blue-200 font-mono text-[11px] text-blue-800">#tentang</span> (Tentang Kami)
+              <span class="bg-white px-2 py-0.5 rounded border border-blue-200 font-mono text-[11px] text-blue-800">#faq</span> (FAQ)
+              <span class="bg-white px-2 py-0.5 rounded border border-blue-200 font-mono text-[11px] text-blue-800">#kontak</span> (Kontak)
+            </div>
+
+            <div id="menu-items-list" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 3: LAYANAN & PRODUK (TIDAK TERBATAS JARTAPLOK PS)
+        ================================================== -->
+        <div id="tab-services" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Solusi Layanan &amp; Produk</h2>
+            <p class="text-sm text-slate-500">Kelola kategori paket layanan (Internet Dedicated, Fiber Optic, IT Solutions, dll.) bebas dari keterikatan satu istilah.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="services-title-input">Judul Bagian Layanan</label>
+                <input type="text" id="services-title-input" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm" placeholder="Solusi Layanan" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="services-hl-input">Kata Highlight (Gradient Text)</label>
+                <input type="text" id="services-hl-input" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm" placeholder="Konektivitas & IT" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="services-sub-input">Deskripsi Sub-judul</label>
+              <textarea id="services-sub-input" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm"></textarea>
+            </div>
+
+            <div class="flex items-center justify-between border-t border-slate-100 pt-4">
+              <h3 class="text-sm font-bold text-slate-900">Daftar Paket &amp; Produk Layanan</h3>
+              <button type="button" id="add-service-btn" class="px-3.5 py-1.5 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary-dark transition-colors flex items-center gap-1">
+                + Tambah Layanan
+              </button>
+            </div>
+
+            <div id="services-items-list" class="space-y-4">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 4: SEO & AI SEARCH ENGINE OPTIMIZER
+        ================================================== -->
+        <div id="tab-seo" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Optimasi SEO &amp; AI Search Engine</h2>
+            <p class="text-sm text-slate-500">Maksimalkan peringkat One-Page di Google Search, Google AI Overviews, Perplexity, dan ChatGPT Search.</p>
+          </div>
+
+          <!-- Live Google & AI Search Simulator Card -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                Simulasi Tampilan Google Search (Halaman 1)
+              </span>
+              <span class="text-[11px] text-emerald-600 bg-emerald-50 font-bold px-2.5 py-0.5 rounded-full">Google One-Page Ready</span>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 font-sans">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-xs text-slate-600 font-medium" id="preview-google-url">https://ids.net.id</span>
+              </div>
+              <h4 id="preview-google-title" class="text-lg text-blue-700 font-semibold hover:underline cursor-pointer leading-snug">
+                PT Infra Digital Solusindo (IDS) — Solusi Jaringan, Internet &amp; IT Medan
+              </h4>
+              <p id="preview-google-desc" class="text-xs text-slate-600 mt-1 leading-relaxed">
+                PT Infra Digital Solusindo adalah penyedia infrastruktur jaringan fiber optik, internet dedicated, local loop, dark fiber, dan IT solution terpercaya di Medan, Binjai, Langkat dan sekitarnya.
+              </p>
+            </div>
+          </div>
+
+          <!-- Form SEO Fields -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">Metadata Inti &amp; Open Graph</h3>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="seo-title">Judul Situs (Page Title) <span class="text-rose-500">*</span></label>
+                <input type="text" id="seo-title" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="seo-desc">Deskripsi Meta (Meta Description) <span class="text-rose-500">*</span></label>
+                <textarea id="seo-desc" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10"></textarea>
+                <p class="text-[11px] text-slate-400 mt-1">Panjang ideal: 140 - 160 karakter agar muncul utuh di snippet Google.</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="seo-keywords">Kata Kunci (Keywords)</label>
+                  <input type="text" id="seo-keywords" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="seo-canonical">Canonical URL</label>
+                  <input type="url" id="seo-canonical" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="seo-geo-region">Geo Region</label>
+                  <input type="text" id="seo-geo-region" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="seo-geo-placename">Geo Placename</label>
+                  <input type="text" id="seo-geo-placename" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="seo-geo-coordinates">Koordinat Lat, Long</label>
+                  <input type="text" id="seo-geo-coordinates" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="seo-ai-summary">Ringkasan Khusus AI Search Engines (Perplexity / ChatGPT Search)</label>
+                <textarea id="seo-ai-summary" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 5: HERO SECTION
+        ================================================== -->
+        <div id="tab-hero" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Hero &amp; Header Banner</h2>
+            <p class="text-sm text-slate-500">Sesuaikan badge promo/legalitas, headline utama dengan gradient text, deskripsi, dan statistik cepat.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="hero-badge-text">Teks Badge Status</label>
+                <input type="text" id="hero-badge-text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="hero-image-path">Path / URL Gambar Hero</label>
+                <input type="text" id="hero-image-path" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" />
+              </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-4 space-y-4">
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Komposisi Headline (Judul Utama)</h4>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-1" for="hero-title-prefix">Awalan Judul</label>
+                  <input type="text" id="hero-title-prefix" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-1" for="hero-title-hl1">Highlight 1 (Gradient)</label>
+                  <input type="text" id="hero-title-hl1" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-1" for="hero-title-mid">Kata Sambung</label>
+                  <input type="text" id="hero-title-mid" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-1" for="hero-title-hl2">Highlight 2 (Gradient)</label>
+                  <input type="text" id="hero-title-hl2" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="hero-desc-input">Deskripsi Paragraf Hero</label>
+              <textarea id="hero-desc-input" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10"></textarea>
+            </div>
+
+            <!-- Tombol Hero -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-100 pt-4">
+              <div class="space-y-2">
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Tombol Utama</label>
+                <input type="text" id="hero-btn1-text" placeholder="Teks Tombol" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs mb-2" />
+                <input type="text" id="hero-btn1-url" placeholder="Target Link (cth: #layanan)" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs" />
+              </div>
+              <div class="space-y-2">
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Tombol Sekunder</label>
+                <input type="text" id="hero-btn2-text" placeholder="Teks Tombol" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs mb-2" />
+                <input type="text" id="hero-btn2-url" placeholder="Target Link (cth: #kontak)" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs" />
+              </div>
+            </div>
+
+            <!-- Statistik Cepat -->
+            <div class="border-t border-slate-100 pt-4 space-y-3">
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Statistik Cepat (Stats Counters)</h4>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <input type="text" id="stat1-val" class="w-full font-bold text-sm px-2 py-1 rounded border mb-1" placeholder="Nilai" />
+                  <input type="text" id="stat1-lbl" class="w-full text-xs px-2 py-1 rounded border text-slate-500" placeholder="Label" />
+                </div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <input type="text" id="stat2-val" class="w-full font-bold text-sm px-2 py-1 rounded border mb-1" placeholder="Nilai" />
+                  <input type="text" id="stat2-lbl" class="w-full text-xs px-2 py-1 rounded border text-slate-500" placeholder="Label" />
+                </div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <input type="text" id="stat3-val" class="w-full font-bold text-sm px-2 py-1 rounded border mb-1" placeholder="Nilai" />
+                  <input type="text" id="stat3-lbl" class="w-full text-xs px-2 py-1 rounded border text-slate-500" placeholder="Label" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 6: MITRA & PARTNERS
+        ================================================== -->
+        <div id="tab-partners" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Mitra &amp; Teknologi</h2>
+            <p class="text-sm text-slate-500">Kelola logo vendor dan partner hardware yang ditampilkan pada slider marquee.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="partners-heading">Judul Bagian Mitra</label>
+              <input type="text" id="partners-heading" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" />
+            </div>
+
+            <div class="flex items-center justify-between border-t border-slate-100 pt-4">
+              <h3 class="text-sm font-bold text-slate-900">Daftar Logo Mitra</h3>
+              <button type="button" id="add-partner-btn" class="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary-dark transition-colors flex items-center gap-1">
+                + Tambah Mitra
+              </button>
+            </div>
+
+            <div id="partners-list" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 7: KEUNGGULAN (WHY US)
+        ================================================== -->
+        <div id="tab-advantages" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Keunggulan (Mengapa Memilih IDS)</h2>
+            <p class="text-sm text-slate-500">Kelola kartu pilar keunggulan dan nilai tambah layanan.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="adv-title-input">Judul Bagian</label>
+                <input type="text" id="adv-title-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="adv-hl-input">Kata Highlight</label>
+                <input type="text" id="adv-hl-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="adv-sub-input">Sub-judul / Penjelasan</label>
+              <textarea id="adv-sub-input" rows="2" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm"></textarea>
+            </div>
+
+            <div class="flex items-center justify-between border-t border-slate-100 pt-4">
+              <h3 class="text-sm font-bold text-slate-900">Kartu Keunggulan</h3>
+              <button type="button" id="add-adv-btn" class="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary-dark transition-colors">
+                + Tambah Keunggulan
+              </button>
+            </div>
+
+            <div id="adv-items-list" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 8: GALERI KEGIATAN
+        ================================================== -->
+        <div id="tab-gallery" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Galeri Kegiatan &amp; Dokumentasi</h2>
+            <p class="text-sm text-slate-500">Kelola foto-foto kegiatan lapangan fiber optik, instalasi, dan pemeliharaan.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="gallery-title-input">Judul Bagian</label>
+                <input type="text" id="gallery-title-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="gallery-sub-input">Deskripsi Singkat</label>
+                <input type="text" id="gallery-sub-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" />
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between border-t border-slate-100 pt-4">
+              <h3 class="text-sm font-bold text-slate-900">Koleksi Foto</h3>
+              <button type="button" id="add-photo-btn" class="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary-dark transition-colors">
+                + Tambah Foto
+              </button>
+            </div>
+
+            <div id="gallery-items-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 9: TENTANG KAMI
+        ================================================== -->
+        <div id="tab-about" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Tentang Kami, Visi, Misi &amp; Nilai</h2>
+            <p class="text-sm text-slate-500">Ubah profil perusahaan, visi jangka panjang, butir-butir misi, dan nilai integritas.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="about-desc-input">Ringkasan Profil Perusahaan</label>
+              <textarea id="about-desc-input" rows="3" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="about-visi-input">Visi Perusahaan</label>
+              <textarea id="about-visi-input" rows="2" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm"></textarea>
+            </div>
+
+            <!-- Misi Points -->
+            <div class="border-t border-slate-100 pt-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Butir Misi Perusahaan</h4>
+                <button type="button" id="add-misi-btn" class="text-xs text-primary font-bold hover:underline">+ Tambah Misi</button>
+              </div>
+              <div id="about-misi-container" class="space-y-2"></div>
+            </div>
+
+            <!-- Nilai-nilai -->
+            <div class="border-t border-slate-100 pt-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Nilai-Nilai Inti (Core Values)</h4>
+                <button type="button" id="add-nilai-btn" class="text-xs text-primary font-bold hover:underline">+ Tambah Nilai</button>
+              </div>
+              <div id="about-nilai-container" class="space-y-2"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 10: FAQ & TANYA JAWAB (PENTING SEO)
+        ================================================== -->
+        <div id="tab-faq" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">FAQ &amp; Tanya Jawab (AEO / SEO AI Booster)</h2>
+            <p class="text-sm text-slate-500">Pertanyaan dan jawaban di sini otomatis disinkronkan ke Schema JSON-LD FAQPage untuk memenangkan rangking Google One-Page dan rangkuman AI.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 class="text-sm font-bold text-slate-900">Daftar Pertanyaan &amp; Jawaban</h3>
+              <button type="button" id="add-faq-btn" class="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary-dark transition-colors">
+                + Tambah FAQ
+              </button>
+            </div>
+
+            <div id="faq-items-list" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 11: CTA BANNER
+        ================================================== -->
+        <div id="tab-cta" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">CTA Banner (Ajakan Bertindak)</h2>
+            <p class="text-sm text-slate-500">Sesuaikan banner ajakan konsultasi sebelum bagian kontak.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="cta-title-input">Judul Banner</label>
+              <input type="text" id="cta-title-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="cta-sub-input">Sub-judul / Penjelasan</label>
+              <textarea id="cta-sub-input" rows="2" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm"></textarea>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="cta-btn1-input">Tombol 1 Teks &amp; Link</label>
+                <input type="text" id="cta-btn1-input" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs mb-2" placeholder="Teks Tombol" />
+                <input type="text" id="cta-btn1-url-input" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs" placeholder="Link (cth: #kontak)" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="cta-btn2-input">Tombol 2 Teks &amp; Link</label>
+                <input type="text" id="cta-btn2-input" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs mb-2" placeholder="Teks Tombol" />
+                <input type="text" id="cta-btn2-url-input" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs" placeholder="Link (cth: #layanan)" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 12: KONTAK & WHATSAPP
+        ================================================== -->
+        <div id="tab-contact" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Kontak, WhatsApp &amp; Jam Operasional</h2>
+            <p class="text-sm text-slate-500">Nomor WhatsApp di sini adalah nomor sentral yang langsung terhubung ke seluruh tombol WhatsApp dan form kontak website.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+              <label class="block text-xs font-bold text-emerald-900 uppercase tracking-wider mb-1" for="contact-wa-number">Nomor WhatsApp Resmi (Format: 628xxxx / tanpa tanda + dan spasi) <span class="text-rose-500">*</span></label>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-emerald-700">+</span>
+                <input type="text" id="contact-wa-number" class="w-full px-4 py-2.5 rounded-xl border border-emerald-300 text-sm font-bold text-emerald-900 focus:ring-2 focus:ring-emerald-400 bg-white" placeholder="628113244321" />
+              </div>
+              <p class="text-[11px] text-emerald-700 mt-1.5">Contoh: <code class="bg-emerald-100 px-1 py-0.5 rounded font-mono">628113244321</code> untuk nomor +62 811-3244-321</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="contact-phone-display">Telepon Tampilan</label>
+                <input type="text" id="contact-phone-display" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="contact-email-input">Email Resmi</label>
+                <input type="email" id="contact-email-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="contact-addr-input">Alamat Kantor Lengkap</label>
+              <textarea id="contact-addr-input" rows="2" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="contact-hours-weekday">Jam Kerja Hari Kerja</label>
+                <input type="text" id="contact-hours-weekday" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" placeholder="Senin – Jumat: 09:00 – 17:00 WIB" />
+                <p class="text-[11px] text-slate-400 mt-1">💡 Otomatis tersinkronisasi dengan kolom jam kerja di Footer.</p>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="contact-hours-weekend">Jam Kerja Akhir Pekan</label>
+                <input type="text" id="contact-hours-weekend" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" placeholder="Sabtu – Minggu: Tutup" />
+                <p class="text-[11px] text-slate-400 mt-1">💡 Otomatis tersinkronisasi dengan kolom akhir pekan di Footer.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 13: FOOTER
+        ================================================== -->
+        <div id="tab-footer" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Footer &amp; Hak Cipta</h2>
+            <p class="text-sm text-slate-500">Kelola keterangan brand bawah dan teks copyright.</p>
+          </div>
+
+          <!-- Kolom 1: Logo & Keterangan Brand Footer -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Logo &amp; Keterangan Brand Footer</h3>
+                <p class="text-xs text-slate-500">Ubah gambar logo footer, teks alternatif, profil perusahaan, tombol login CMS, dan copyright.</p>
+              </div>
+              <button type="button" id="copy-navbar-logo-to-footer-btn" class="px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 hover:bg-blue-100 transition-colors flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                Salin Logo dari Navbar
+              </button>
+            </div>
+
+            <!-- Preview & Logo Inputs -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
+              <div class="flex flex-col items-center justify-center p-3 border border-slate-700 rounded-lg bg-slate-800/80">
+                <span class="text-[10px] text-slate-400 mb-2 font-semibold">Pratinjau Logo Footer</span>
+                <img id="footer-logo-preview" src="./images/logo.png" alt="Preview Logo" class="h-12 brightness-0 invert object-contain max-w-full" />
+              </div>
+              <div class="md:col-span-2 space-y-3">
+                <div>
+                  <label class="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-1" for="footer-logo-url-input">Path Gambar / URL Logo Footer</label>
+                  <input type="text" id="footer-logo-url-input" class="w-full px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-white text-xs font-mono" placeholder="./images/logo.png" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-1" for="footer-logo-alt-input">Teks Alt Logo / Nama Brand</label>
+                  <input type="text" id="footer-logo-alt-input" class="w-full px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-white text-xs" placeholder="PT Infra Digital Solusindo" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-desc-input">Keterangan / Deskripsi Singkat Footer</label>
+              <textarea id="footer-desc-input" rows="3" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm leading-relaxed" placeholder="Deskripsi profil perusahaan pada footer..."></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-copy-input">Teks Hak Cipta (Copyright)</label>
+                <input type="text" id="footer-copy-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" placeholder="PT Infra Digital Solusindo. All rights reserved." />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-admin-btn-text-input">Tombol Akses Admin CMS</label>
+                <div class="flex items-center gap-3">
+                  <input type="text" id="footer-admin-btn-text-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" placeholder="Login Admin Panel CMS" />
+                  <label class="inline-flex items-center gap-1.5 text-xs text-slate-600 whitespace-nowrap cursor-pointer">
+                    <input type="checkbox" id="footer-show-admin-btn" class="rounded text-primary" />
+                    <span>Tampilkan</span>
+                  </label>
+                </div>
+                <p class="text-[11px] text-amber-600 mt-1">Disarankan tetap <strong>Nonaktif</strong> agar akses login admin tersembunyi sepenuhnya dari publik &amp; mesin pencari.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu Link Navigasi Footer -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Kolom Menu Navigasi Footer</h3>
+                <p class="text-xs text-slate-500">Kelola link navigasi yang muncul di kolom navigasi footer website.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" id="copy-nav-to-footer-btn" class="px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 hover:bg-blue-100 transition-colors">
+                  Salin dari Navbar
+                </button>
+                <button type="button" id="add-footer-link-btn" class="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary-dark transition-colors flex items-center gap-1">
+                  + Tambah Link Footer
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-nav-title-input">Judul Kolom Navigasi Footer</label>
+              <input type="text" id="footer-nav-title-input" class="w-full sm:w-1/2 px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold" placeholder="Navigasi" />
+            </div>
+
+            <div id="footer-links-list" class="space-y-2.5">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Pengaturan Jam Kerja Footer -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Kolom Jam Kerja Footer</h3>
+                <p class="text-xs text-slate-500">Sesuaikan judul, label hari, jadwal buka, dan catatan operasional pada footer.</p>
+              </div>
+              <button type="button" id="copy-contact-hours-to-footer-btn" class="px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 hover:bg-blue-100 transition-colors flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                Salin dari Modul Kontak
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-hours-title-input">Judul Kolom Jam Kerja</label>
+                <input type="text" id="footer-hours-title-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm font-semibold" placeholder="Jam Kerja" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-hours-note-input">Catatan Tambahan (Opsional)</label>
+                <input type="text" id="footer-hours-note-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" placeholder="cth: Dukungan NOC 24/7 Siap Melayani" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1" for="footer-hours-wday-label-input">Label Hari Kerja</label>
+                <input type="text" id="footer-hours-wday-label-input" class="w-full px-3.5 py-2 rounded-lg border border-slate-200 text-xs bg-white" placeholder="Senin – Jumat" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1" for="footer-hours-wday-time-input">Waktu Operasional Hari Kerja</label>
+                <input type="text" id="footer-hours-wday-time-input" class="w-full px-3.5 py-2 rounded-lg border border-slate-200 text-xs bg-white font-medium" placeholder="09:00 – 17:00 WIB" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1" for="footer-hours-wend-label-input">Label Akhir Pekan / Libur</label>
+                <input type="text" id="footer-hours-wend-label-input" class="w-full px-3.5 py-2 rounded-lg border border-slate-200 text-xs bg-white" placeholder="Sabtu – Minggu" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1" for="footer-hours-wend-time-input">Status / Waktu Akhir Pekan</label>
+                <input type="text" id="footer-hours-wend-time-input" class="w-full px-3.5 py-2 rounded-lg border border-slate-200 text-xs bg-white font-medium" placeholder="Tutup (Layanan Darurat On-Call)" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Pengaturan Kontak Footer -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Kolom Kontak Footer</h3>
+                <p class="text-xs text-slate-500">Sesuaikan judul, alamat, nomor telepon, email, dan website yang tertera di footer.</p>
+              </div>
+              <button type="button" id="copy-contact-info-to-footer-btn" class="px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 hover:bg-blue-100 transition-colors flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                Salin dari Modul Kontak
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-contact-title-input">Judul Kolom Kontak</label>
+                <input type="text" id="footer-contact-title-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm font-semibold" placeholder="Kontak" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-contact-web-input">Website Resmi</label>
+                <input type="text" id="footer-contact-web-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" placeholder="www.ids.net.id" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-contact-addr-input">Alamat Kantor Footer</label>
+              <textarea id="footer-contact-addr-input" rows="2" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" placeholder="Alamat lengkap"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-contact-phone-input">Nomor Telepon / Hotline</label>
+                <input type="text" id="footer-contact-phone-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" placeholder="+62 811-3244-321" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="footer-contact-email-input">Email Resmi</label>
+                <input type="email" id="footer-contact-email-input" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm" placeholder="admin@ids.net.id" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 14: BACKUP & SINKRONISASI
+        ================================================== -->
+        <div id="tab-backup" class="tab-content hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Backup, Ekspor &amp; Sinkronisasi Data</h2>
+            <p class="text-sm text-slate-500">Unduh data JSON lengkap, pulihkan dari file backup, atau reset ke pengaturan awal.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <!-- Ekspor JSON -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center mb-3">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                </div>
+                <h3 class="text-base font-bold text-slate-900">Unduh Backup JSON</h3>
+                <p class="text-xs text-slate-500 mt-1">Simpan salinan cadangan seluruh isi website ke komputer Anda dalam format .json.</p>
+              </div>
+              <button type="button" id="download-json-btn" class="w-full py-2.5 px-4 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-colors">
+                Download site-data.json
+              </button>
+            </div>
+
+            <!-- Impor JSON -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                </div>
+                <h3 class="text-base font-bold text-slate-900">Pulihkan / Import File</h3>
+                <p class="text-xs text-slate-500 mt-1">Unggah file backup .json sebelumnya untuk mengembalikan konten secara instan.</p>
+              </div>
+              <div>
+                <input type="file" id="import-json-file" accept=".json" class="hidden" />
+                <button type="button" onclick="document.getElementById('import-json-file').click()" class="w-full py-2.5 px-4 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition-colors">
+                  Pilih File JSON Backup
+                </button>
+              </div>
+            </div>
+
+            <!-- Reset Pabrik -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mb-3">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </div>
+                <h3 class="text-base font-bold text-slate-900">Reset ke Default</h3>
+                <p class="text-xs text-slate-500 mt-1">Kembalikan semua teks, menu, dan pengaturan ke template awal bawaan sistem.</p>
+              </div>
+              <button type="button" id="reset-factory-btn" class="w-full py-2.5 px-4 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 transition-colors">
+                Reset ke Pengaturan Default
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Admin CMS Logic JS -->
+  <script src="./src/admin.js"></script>
+</body>
+
+</html>

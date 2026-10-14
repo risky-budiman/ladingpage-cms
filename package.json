@@ -1,0 +1,14 @@
+{
+  "name": "ids-landing",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "server": "node server.js",
+    "build": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
+    "dev": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}

@@ -1,0 +1,42 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /data/
+
+# AI Search & Crawlers (Halaman publik terindeks, Panel Admin & Data terproteksi penuh)
+User-agent: GPTBot
+Allow: /
+Disallow: /admin.html
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /data/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin.html
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /data/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin.html
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /data/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin.html
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /data/
+
+Sitemap: https://ids.net.id/sitemap.xml
