@@ -10,8 +10,9 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet" />
 
-  <link rel="icon" href="./images/favicon.ico" />
-  <link rel="stylesheet" href="./dist/output.css" />
+  <base href="/" />
+  <link rel="icon" href="/images/favicon.ico" />
+  <link rel="stylesheet" href="/dist/output.css?v=2.2" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -48,7 +49,7 @@
       <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
 
       <div class="relative z-10">
-        <img src="./images/logo.png" alt="IDS Logo" class="h-16 mx-auto mb-4 drop-shadow-sm" />
+        <img src="/images/logo.png" alt="IDS Logo" class="h-16 mx-auto mb-4 drop-shadow-sm" />
         <h2 class="text-2xl font-extrabold text-slate-900 mb-1">Admin Panel CMS</h2>
         <p class="text-xs text-slate-500 mb-6">PT Infra Digital Solusindo — Kontrol Konten &amp; SEO</p>
 
@@ -90,7 +91,7 @@
     <header class="bg-white border-b border-slate-200 sticky top-0 z-40 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-sm">
       <div class="flex items-center gap-4">
         <a href="index.html" target="_blank" class="flex items-center gap-2" title="Lihat Website IDS">
-          <img src="./images/logo.png" alt="IDS Logo" class="h-9 sm:h-11" />
+          <img src="/images/logo.png" alt="IDS Logo" class="h-9 sm:h-11" />
         </a>
         <div class="hidden sm:block border-l border-slate-200 pl-4">
           <h1 class="text-base font-bold text-slate-900 leading-tight">Admin CMS Panel</h1>
@@ -398,7 +399,7 @@
             </div>
             <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <img id="nav-preview-logo" src="./images/logo.png" alt="Logo" class="h-8 max-w-[120px] object-contain" />
+                <img id="nav-preview-logo" src="/images/logo.png" alt="Logo" class="h-8 max-w-[120px] object-contain" />
               </div>
               <div id="nav-preview-links" class="hidden sm:flex items-center gap-5 text-xs font-medium text-slate-700">
                 <!-- Preview links -->
@@ -950,7 +951,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
               <div class="flex flex-col items-center justify-center p-3 border border-slate-700 rounded-lg bg-slate-800/80">
                 <span class="text-[10px] text-slate-400 mb-2 font-semibold">Pratinjau Logo Footer</span>
-                <img id="footer-logo-preview" src="./images/logo.png" alt="Preview Logo" class="h-12 brightness-0 invert object-contain max-w-full" />
+                <img id="footer-logo-preview" src="/images/logo.png" alt="Preview Logo" class="h-12 brightness-0 invert object-contain max-w-full" />
               </div>
               <div class="md:col-span-2 space-y-3">
                 <div>
@@ -1165,7 +1166,7 @@
   </div>
 
   <!-- Admin CMS Logic JS -->
-  <script src="./src/admin.js"></script>
+  <script src="/src/admin.js?v=2.2"></script>
 </body>
 
 </html>

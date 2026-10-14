@@ -126,10 +126,16 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Routing file statis
-  let filePath = path.join(ROOT_DIR, pathname === '/' ? 'index.html' : pathname);
+  // Normalisasi path jika ada request asset di bawah prefix /admin/ (misal /admin/dist/output.css atau /admin/src/admin.js)
+  let cleanPath = pathname;
+  if (cleanPath.startsWith('/admin/') && cleanPath !== '/admin/') {
+    cleanPath = cleanPath.substring('/admin'.length);
+  }
 
-  // Jika URL adalah /admin, redirect atau layani admin.html
+  // Routing file statis
+  let filePath = path.join(ROOT_DIR, cleanPath === '/' ? 'index.html' : cleanPath);
+
+  // Jika URL adalah /admin atau /admin/, layani admin.html
   if (pathname === '/admin' || pathname === '/admin/') {
     filePath = path.join(ROOT_DIR, 'admin.html');
   }

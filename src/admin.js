@@ -11,16 +11,16 @@
   const DEFAULT_PIN = 'admin123';
   const API_CONTENT_URL = '/api/content';
   const API_SAVE_URL = '/api/save-content';
-  const STATIC_JSON_URL = './data/site-data.json';
+  const STATIC_JSON_URL = '/data/site-data.json';
 
   // Preset foto galeri lokal untuk kemudahan pemilihan
   const LOCAL_GALLERY_PRESETS = [
-    { label: 'Splicing', path: './images/galery/splice.jpg' },
-    { label: 'ODP', path: './images/galery/odp.jpg' },
-    { label: 'Penarikan', path: './images/galery/penarikan.jpg' },
-    { label: 'OPM Redaman', path: './images/galery/opm.jpg' },
-    { label: 'Joint Closure', path: './images/galery/join.jpg' },
-    { label: 'Kabel Optik', path: './images/galery/kabel.jpg' }
+    { label: 'Splicing', path: '/images/galery/splice.jpg' },
+    { label: 'ODP', path: '/images/galery/odp.jpg' },
+    { label: 'Penarikan', path: '/images/galery/penarikan.jpg' },
+    { label: 'OPM Redaman', path: '/images/galery/opm.jpg' },
+    { label: 'Joint Closure', path: '/images/galery/join.jpg' },
+    { label: 'Kabel Optik', path: '/images/galery/kabel.jpg' }
   ];
 
   // Quick section targets
