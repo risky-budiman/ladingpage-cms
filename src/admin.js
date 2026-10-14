@@ -403,6 +403,9 @@
       setVal('footer-contact-phone-input', data.footer.phone || data.contact?.phone || '');
       setVal('footer-contact-email-input', data.footer.email || data.contact?.email || '');
     }
+
+    // AI Automation
+    populateAiAutomation(data);
   }
 
   function stripDayPrefix(str, label) {
@@ -1147,6 +1150,282 @@
   }
 
   // ==========================================
+  // 5.B OTOMASI AI SEO (GOOGLE GEMINI / OPENAI)
+  // ==========================================
+  function populateAiAutomation(data) {
+    const ai = data.aiAutomation || {
+      enabled: false,
+      provider: 'gemini',
+      apiKey: '',
+      model: 'gemini-1.5-flash',
+      frequency: 'daily',
+      targetRegion: 'Medan, Binjai, Langkat, Deli Serdang, Sumatera Utara',
+      focusTopics: 'Internet Dedicated, Fiber Optic, Local Loop, Dark Fiber, Managed IT Solutions',
+      autoUpdateMeta: true,
+      autoUpdateAiSummary: true,
+      autoUpdateFaq: true,
+      lastRun: null,
+      lastStatus: 'Nonaktif (Belum pernah dijalankan)'
+    };
+
+    const toggle = document.getElementById('ai-master-toggle');
+    if (toggle) {
+      toggle.checked = Boolean(ai.enabled);
+      updateAiMasterToggleUI(toggle.checked);
+    }
+
+    setVal('ai-provider-select', ai.provider || 'gemini');
+    updateAiModelOptions(ai.provider || 'gemini', ai.model || 'gemini-1.5-flash');
+    setVal('ai-api-key-input', ai.apiKey || '');
+    setVal('ai-frequency-select', ai.frequency || 'daily');
+    setVal('ai-target-region-input', ai.targetRegion || 'Medan, Binjai, Langkat, Deli Serdang, Sumatera Utara');
+    setVal('ai-focus-topics-input', ai.focusTopics || 'Internet Dedicated, Fiber Optic, Local Loop, Dark Fiber, Managed IT Solutions');
+
+    const metaCheck = document.getElementById('ai-update-meta-check');
+    if (metaCheck) metaCheck.checked = ai.autoUpdateMeta !== false;
+
+    const aiSumCheck = document.getElementById('ai-update-ai-summary-check');
+    if (aiSumCheck) aiSumCheck.checked = ai.autoUpdateAiSummary !== false;
+
+    const faqCheck = document.getElementById('ai-update-faq-check');
+    if (faqCheck) faqCheck.checked = ai.autoUpdateFaq !== false;
+
+    updateAiStatusUI(ai);
+  }
+
+  function updateAiMasterToggleUI(isEnabled) {
+    const statusPill = document.getElementById('ai-status-pill');
+    const toggleLabel = document.getElementById('ai-toggle-label');
+    const masterCard = document.getElementById('ai-master-card');
+    const sidebarBadge = document.getElementById('sidebar-ai-badge');
+
+    if (isEnabled) {
+      if (statusPill) {
+        statusPill.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300';
+        statusPill.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>🟢 AKTIF (ON)</span>';
+      }
+      if (toggleLabel) {
+        toggleLabel.textContent = 'ON';
+        toggleLabel.className = 'text-sm font-extrabold text-emerald-600 w-12';
+      }
+      if (masterCard) {
+        masterCard.className = 'bg-emerald-50/70 p-6 rounded-2xl border-2 border-emerald-300 shadow-sm transition-all';
+      }
+      if (sidebarBadge) {
+        sidebarBadge.textContent = 'ON';
+        sidebarBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-white shadow-xs';
+      }
+    } else {
+      if (statusPill) {
+        statusPill.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-500 border border-slate-200';
+        statusPill.innerHTML = '<span class="w-2 h-2 rounded-full bg-slate-400"></span><span>⚪ NONAKTIF (OFF)</span>';
+      }
+      if (toggleLabel) {
+        toggleLabel.textContent = 'OFF';
+        toggleLabel.className = 'text-sm font-extrabold text-slate-400 w-12';
+      }
+      if (masterCard) {
+        masterCard.className = 'bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm transition-all';
+      }
+      if (sidebarBadge) {
+        sidebarBadge.textContent = 'OFF';
+        sidebarBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500';
+      }
+    }
+  }
+
+  function updateAiStatusUI(ai) {
+    const lastRunPill = document.getElementById('ai-last-run-pill');
+    const lastStatusText = document.getElementById('ai-last-status-text');
+    const lastRunTime = document.getElementById('ai-last-run-time');
+
+    if (lastStatusText) lastStatusText.textContent = ai.lastStatus || 'Nonaktif';
+    if (lastRunTime) {
+      lastRunTime.textContent = ai.lastRun ? new Date(ai.lastRun).toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' }) : 'Belum pernah dijalankan';
+    }
+    if (lastRunPill) {
+      lastRunPill.textContent = ai.lastRun ? 'Terakhir: ' + new Date(ai.lastRun).toLocaleDateString('id-ID') : 'Belum pernah';
+    }
+  }
+
+  function updateAiModelOptions(provider, selectedModel) {
+    const modelSelect = document.getElementById('ai-model-select');
+    const helpLink = document.getElementById('ai-key-help-link');
+    if (!modelSelect) return;
+
+    if (provider === 'gemini') {
+      modelSelect.innerHTML = `
+        <option value="gemini-1.5-flash">gemini-1.5-flash (Direkomendasikan - Cepat & Efisien)</option>
+        <option value="gemini-1.5-pro">gemini-1.5-pro (Analisis Mendalam)</option>
+      `;
+      if (helpLink) {
+        helpLink.href = 'https://aistudio.google.com/app/apikey';
+        helpLink.innerHTML = '<span>Dapatkan API Key Gratis di Google AI Studio</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>';
+      }
+    } else {
+      modelSelect.innerHTML = `
+        <option value="gpt-4o-mini">gpt-4o-mini (Cepat & Hemat Biaya)</option>
+        <option value="gpt-4o">gpt-4o (Akurasi Maksimal)</option>
+      `;
+      if (helpLink) {
+        helpLink.href = 'https://platform.openai.com/api-keys';
+        helpLink.innerHTML = '<span>Dapatkan API Key di OpenAI Platform</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>';
+      }
+    }
+
+    if (selectedModel) {
+      modelSelect.value = selectedModel;
+    }
+  }
+
+  function collectAiAutomationData() {
+    const isEnabled = Boolean(document.getElementById('ai-master-toggle')?.checked);
+    const existing = currentData?.aiAutomation || {};
+
+    return {
+      enabled: isEnabled,
+      provider: getVal('ai-provider-select', 'gemini'),
+      apiKey: getVal('ai-api-key-input', '').trim(),
+      model: getVal('ai-model-select', 'gemini-1.5-flash'),
+      frequency: getVal('ai-frequency-select', 'daily'),
+      targetRegion: getVal('ai-target-region-input', 'Medan, Binjai, Langkat, Deli Serdang, Sumatera Utara'),
+      focusTopics: getVal('ai-focus-topics-input', 'Internet Dedicated, Fiber Optic, Local Loop, Dark Fiber, Managed IT Solutions'),
+      autoUpdateMeta: Boolean(document.getElementById('ai-update-meta-check')?.checked),
+      autoUpdateAiSummary: Boolean(document.getElementById('ai-update-ai-summary-check')?.checked),
+      autoUpdateFaq: Boolean(document.getElementById('ai-update-faq-check')?.checked),
+      lastRun: existing.lastRun || null,
+      lastStatus: existing.lastStatus || (isEnabled ? 'Aktif (Menunggu jadwal berikutnya)' : 'Nonaktif')
+    };
+  }
+
+  // Bind Event Listeners Modul AI
+  const aiMasterToggle = document.getElementById('ai-master-toggle');
+  if (aiMasterToggle) {
+    aiMasterToggle.addEventListener('change', () => {
+      const isEnabled = aiMasterToggle.checked;
+      updateAiMasterToggleUI(isEnabled);
+      if (isEnabled) {
+        const key = getVal('ai-api-key-input', '').trim();
+        if (!key) {
+          showToast('⚠️ Mohon isi API Key terlebih dahulu agar AI dapat bekerja!', false, '⚠️');
+        } else {
+          showToast('🟢 Otomasi AI SEO diaktifkan! Jangan lupa klik Simpan Semua.', true, '🤖');
+        }
+      } else {
+        showToast('⚪ Otomasi AI SEO dinonaktifkan.', true, '⏸️');
+      }
+    });
+  }
+
+  const aiProviderSelect = document.getElementById('ai-provider-select');
+  if (aiProviderSelect) {
+    aiProviderSelect.addEventListener('change', (e) => {
+      updateAiModelOptions(e.target.value);
+    });
+  }
+
+  const toggleAiKeyVisBtn = document.getElementById('toggle-ai-key-vis');
+  const aiApiKeyInput = document.getElementById('ai-api-key-input');
+  if (toggleAiKeyVisBtn && aiApiKeyInput) {
+    toggleAiKeyVisBtn.addEventListener('click', () => {
+      aiApiKeyInput.type = aiApiKeyInput.type === 'password' ? 'text' : 'password';
+    });
+  }
+
+  const btnSaveAiConfig = document.getElementById('btn-save-ai-config');
+  if (btnSaveAiConfig) {
+    btnSaveAiConfig.addEventListener('click', () => {
+      saveAllData();
+    });
+  }
+
+  const btnRunAiNow = document.getElementById('btn-run-ai-now');
+  if (btnRunAiNow) {
+    btnRunAiNow.addEventListener('click', async () => {
+      const config = collectAiAutomationData();
+      if (!config.apiKey) {
+        alert('Mohon masukkan API Key (Gemini atau OpenAI) Anda terlebih dahulu sebelum menjalankan optimasi!');
+        document.getElementById('ai-api-key-input')?.focus();
+        return;
+      }
+
+      btnRunAiNow.disabled = true;
+      const originalText = btnRunAiNow.innerHTML;
+      btnRunAiNow.innerHTML = `
+        <svg class="w-4 h-4 animate-spin text-white inline-block mr-1.5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+        <span>Sedang Menganalisis &amp; Mengoptimasi Konten...</span>
+      `;
+
+      try {
+        const res = await fetch('/api/ai-optimize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ config })
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Terjadi kesalahan saat memanggil API AI');
+        }
+
+        // Tampilkan hasil di preview container
+        const outContainer = document.getElementById('ai-output-container');
+        const outTimestamp = document.getElementById('ai-output-timestamp');
+        const outDetails = document.getElementById('ai-output-details');
+
+        if (outContainer && outDetails && data.aiResult) {
+          outContainer.classList.remove('hidden');
+          if (outTimestamp) outTimestamp.textContent = new Date().toLocaleTimeString('id-ID');
+          
+          let faqHtml = '';
+          if (Array.isArray(data.aiResult.suggestedFaq) && data.aiResult.suggestedFaq.length > 0) {
+            faqHtml = `<div class="mt-2 pt-2 border-t border-emerald-200">
+              <span class="font-bold text-emerald-900">Pertanyaan FAQ Baru yang Ditambahkan:</span>
+              <p class="font-semibold text-slate-800">Q: ${data.aiResult.suggestedFaq[0].question}</p>
+              <p class="text-slate-600">A: ${data.aiResult.suggestedFaq[0].answer}</p>
+            </div>`;
+          }
+
+          outDetails.innerHTML = `
+            <div><span class="font-bold text-emerald-900">Judul Baru:</span> ${data.aiResult.siteTitle || '-'}</div>
+            <div><span class="font-bold text-emerald-900">Deskripsi:</span> ${data.aiResult.metaDescription || '-'}</div>
+            <div><span class="font-bold text-emerald-900">Keywords:</span> <span class="font-mono text-[11px]">${data.aiResult.keywords || '-'}</span></div>
+            <div><span class="font-bold text-emerald-900">Ringkasan AI:</span> ${data.aiResult.aiSearchSummary || '-'}</div>
+            ${faqHtml}
+          `;
+        }
+
+        // Sinkronkan ke form SEO langsung jika dipilih
+        if (config.autoUpdateMeta && data.aiResult.siteTitle) {
+          setVal('seo-title', data.aiResult.siteTitle);
+          if (data.aiResult.metaDescription) setVal('seo-desc', data.aiResult.metaDescription);
+          if (data.aiResult.keywords) setVal('seo-keywords', data.aiResult.keywords);
+          updateGoogleSnippetPreview({
+            siteTitle: data.aiResult.siteTitle,
+            metaDescription: data.aiResult.metaDescription
+          });
+        }
+        if (config.autoUpdateAiSummary && data.aiResult.aiSearchSummary) {
+          setVal('seo-ai-summary', data.aiResult.aiSearchSummary);
+        }
+
+        // Update status & last run UI
+        config.lastRun = data.lastRun || new Date().toISOString();
+        config.lastStatus = data.message || 'Sukses dioptimasi oleh AI';
+        updateAiStatusUI(config);
+
+        showToast('⚡ AI Berhasil mengoptimasi SEO & konten website!', true, '🤖');
+      } catch (err) {
+        console.error('Error run AI now:', err);
+        alert('Gagal mengeksekusi AI Optimasi: ' + err.message);
+      } finally {
+        btnRunAiNow.disabled = false;
+        btnRunAiNow.innerHTML = originalText;
+      }
+    });
+  }
+
+  // ==========================================
   // 6. SIMPAN SEMUA PERUBAHAN
   // ==========================================
   async function saveAllData() {
@@ -1296,6 +1575,7 @@
         phone: getVal('footer-contact-phone-input'),
         email: getVal('footer-contact-email-input')
       },
+      aiAutomation: collectAiAutomationData(),
       adminPassword: getActivePassword()
     };
 

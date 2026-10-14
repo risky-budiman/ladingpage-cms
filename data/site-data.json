@@ -336,5 +336,19 @@
     "phone": "+62 817 0 1000 17",
     "email": "info@ids.net.id"
   },
+  "aiAutomation": {
+    "enabled": false,
+    "provider": "gemini",
+    "apiKey": "",
+    "model": "gemini-1.5-flash",
+    "frequency": "daily",
+    "targetRegion": "Medan, Binjai, Langkat, Deli Serdang, Sumatera Utara",
+    "focusTopics": "Internet Dedicated, Fiber Optic, Local Loop, Dark Fiber, Managed IT Solutions",
+    "autoUpdateMeta": true,
+    "autoUpdateAiSummary": true,
+    "autoUpdateFaq": true,
+    "lastRun": null,
+    "lastStatus": "Nonaktif (Belum pernah dijalankan)"
+  },
   "adminPassword": "admin123"
 }

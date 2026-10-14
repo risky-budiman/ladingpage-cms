@@ -137,6 +137,7 @@
       <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-navbar">Menu &amp; Navbar</button>
       <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-services">Layanan &amp; Produk</button>
       <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-seo">SEO &amp; AI</button>
+      <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200" data-tab="tab-ai-automation">🤖 Otomasi AI</button>
       <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-hero">Hero</button>
       <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-partners">Mitra</button>
       <button class="mobile-nav-tab whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600" data-tab="tab-advantages">Keunggulan</button>
@@ -172,6 +173,14 @@
           <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-seo">
             <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             SEO &amp; AI Search Engine
+          </button>
+
+          <button class="nav-tab w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-ai-automation">
+            <span class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span>Otomasi AI SEO</span>
+            </span>
+            <span id="sidebar-ai-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">OFF</span>
           </button>
 
           <button class="nav-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-tab="tab-hero">
@@ -594,6 +603,180 @@
               <div>
                 <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="seo-ai-summary">Ringkasan Khusus AI Search Engines (Perplexity / ChatGPT Search)</label>
                 <textarea id="seo-ai-summary" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB: OTOMASI AI SEO & KONTEN (ON / OFF SWITCH)
+        ================================================== -->
+        <div id="tab-ai-automation" class="tab-content hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+                <span>🤖</span> Otomasi SEO &amp; Konten AI (Google Gemini / OpenAI)
+              </h2>
+              <p class="text-sm text-slate-500">Otomasi pembaruan meta tags, keyword, dan FAQ secara berkala untuk mempertahankan ranking 1 Google &amp; AI Search Engine.</p>
+            </div>
+          </div>
+
+          <!-- KARTU 1: SAKELAR UTAMA (MASTER ON / OFF SWITCH) -->
+          <div class="bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm transition-all" id="ai-master-card">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="space-y-1">
+                <div class="flex items-center gap-3">
+                  <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Status Otomasi AI</span>
+                  <span id="ai-status-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-500">
+                    <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                    <span id="ai-status-pill-text">⚪ NONAKTIF (OFF)</span>
+                  </span>
+                </div>
+                <h3 class="text-lg font-black text-slate-900">Sakelar Utama Otomasi Konten &amp; SEO</h3>
+                <p class="text-xs text-slate-500 max-w-2xl leading-relaxed">
+                  Jika diaktifkan (<span class="font-bold text-emerald-600">ON</span>), sistem akan menjalankan pembaruan metadata dan konten terjadwal sesuai interval yang Anda tentukan. Jika dimatikan (<span class="font-bold text-slate-600">OFF</span>), seluruh proses otomatisasi dihentikan sepenuhnya dan tidak ada kuota API yang terpakai.
+                </p>
+              </div>
+
+              <!-- Big Switch Toggle -->
+              <div class="flex items-center gap-3 self-start sm:self-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                <label for="ai-master-toggle" class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="ai-master-toggle" class="sr-only peer">
+                  <div class="w-14 h-8 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                </label>
+                <span id="ai-toggle-label" class="text-sm font-extrabold text-slate-500 w-12">OFF</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- KARTU 2: PROVIDER & API KEY CREDENTIALS -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center justify-between">
+              <span>Konfigurasi Provider AI &amp; Token API</span>
+              <span class="text-[11px] text-blue-600 font-semibold">Tersimpan Aman di Server Lokal</span>
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="ai-provider-select">Pilih Penyedia AI</label>
+                <select id="ai-provider-select" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium">
+                  <option value="gemini">Google Gemini (Sangat Cepat &amp; Kuota Gratis Besar)</option>
+                  <option value="openai">OpenAI (ChatGPT / GPT-4o-mini)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="ai-model-select">Model AI</label>
+                <select id="ai-model-select" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium">
+                  <option value="gemini-1.5-flash">gemini-1.5-flash (Direkomendasikan - Cepat &amp; Ringan)</option>
+                  <option value="gemini-1.5-pro">gemini-1.5-pro (Analisis Mendalam)</option>
+                  <option value="gpt-4o-mini">gpt-4o-mini (Cepat &amp; Hemat)</option>
+                  <option value="gpt-4o">gpt-4o (Akurasi Maksimal)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider" for="ai-api-key-input">API Key Token <span class="text-rose-500">*</span></label>
+                <a id="ai-key-help-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
+                  <span>Dapatkan API Key Gratis di Google AI Studio</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+              </div>
+              <div class="relative">
+                <input type="password" id="ai-api-key-input" class="w-full pl-4 pr-11 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 font-mono" placeholder="Masukkan token API Anda..." autocomplete="off" />
+                <button type="button" id="toggle-ai-key-vis" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1" title="Lihat/Sembunyikan Token">
+                  <svg id="eye-icon-ai" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </button>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Token API hanya disimpan di file konfigurasi server pribadi Anda (`site-data.json`), aman dan tidak terpublikasi.</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="ai-frequency-select">Jadwal Eksekusi Otomatis (Cron)</label>
+              <select id="ai-frequency-select" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium">
+                <option value="daily">Setiap Hari (Daily - Tiap 24 Jam) [Rekomendasi Ranking #1 Google]</option>
+                <option value="weekly">Setiap Minggu (Weekly - Tiap 7 Hari)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- KARTU 3: TARGET WILAYAH & LINGKUP OPTIMASI -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">Target Wilayah &amp; Fokus Optimasi</h3>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="ai-target-region-input">Target Wilayah SEO Lokal (Geo-Targeting)</label>
+                <input type="text" id="ai-target-region-input" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" placeholder="Contoh: Medan, Binjai, Langkat, Deli Serdang, Sumatera Utara" />
+                <p class="text-[11px] text-slate-400 mt-1">AI akan menyesuaikan kata kunci dan pertanyaan FAQ agar relevan dengan pencarian bisnis di kota-kota ini.</p>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="ai-focus-topics-input">Fokus Produk &amp; Layanan Prioritas</label>
+                <input type="text" id="ai-focus-topics-input" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10" placeholder="Contoh: Internet Dedicated, Fiber Optic, Local Loop, Dark Fiber, Managed IT Solutions" />
+              </div>
+
+              <div class="border-t border-slate-100 pt-3 space-y-3">
+                <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Elemen yang Diperbarui Otomatis oleh AI:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                    <input type="checkbox" id="ai-update-meta-check" class="w-4 h-4 rounded text-primary focus:ring-primary/20" checked />
+                    <span class="text-xs font-semibold text-slate-700">Meta Title &amp; Description</span>
+                  </label>
+                  <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                    <input type="checkbox" id="ai-update-ai-summary-check" class="w-4 h-4 rounded text-primary focus:ring-primary/20" checked />
+                    <span class="text-xs font-semibold text-slate-700">AI Search Summary</span>
+                  </label>
+                  <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                    <input type="checkbox" id="ai-update-faq-check" class="w-4 h-4 rounded text-primary focus:ring-primary/20" checked />
+                    <span class="text-xs font-semibold text-slate-700">Pertanyaan FAQ Baru</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KARTU 4: EKSEKUSI SEGERA & STATUS LOG -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center justify-between">
+              <span>Status &amp; Eksekusi Langsung</span>
+              <span id="ai-last-run-pill" class="text-[11px] text-slate-500 font-mono">Belum pernah dijalankan</span>
+            </h3>
+
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-700">Status Terakhir:</span>
+                <span id="ai-last-status-text" class="font-medium text-slate-600">Nonaktif</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-700">Waktu Terakhir Dijalankan:</span>
+                <span id="ai-last-run-time" class="font-mono text-slate-500">-</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
+              <button type="button" id="btn-run-ai-now" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-purple-600 text-white text-xs sm:text-sm font-bold hover:bg-purple-700 transition-all shadow-md shadow-purple-200 active:scale-95">
+                <svg id="ai-run-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <span id="ai-run-text">⚡ Jalankan AI Optimasi Sekarang</span>
+              </button>
+
+              <button type="button" id="btn-save-ai-config" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-bold hover:bg-slate-800 transition-all active:scale-95">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>Simpan Pengaturan AI</span>
+              </button>
+            </div>
+
+            <!-- Live Output Preview -->
+            <div id="ai-output-container" class="hidden mt-4 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs space-y-3">
+              <div class="flex items-center justify-between text-emerald-800 font-bold border-b border-emerald-200 pb-2">
+                <span>✅ Hasil Optimasi AI Terbaru:</span>
+                <span id="ai-output-timestamp" class="text-[11px] font-mono"></span>
+              </div>
+              <div id="ai-output-details" class="space-y-2 text-slate-800 font-sans">
+                <!-- Injected via JavaScript -->
               </div>
             </div>
           </div>
