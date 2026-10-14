@@ -72,7 +72,7 @@
     if (enteredPin === activePwd) {
       sessionStorage.setItem(AUTH_KEY, 'true');
       loginModal.classList.add('hidden');
-      showToast('✅ Berhasil masuk ke Admin Panel!', true);
+      showToast('Berhasil masuk ke Admin Panel!', true);
     } else {
       alert('Kata sandi / PIN salah! Silakan coba lagi.');
       adminPinInput.focus();
@@ -115,7 +115,7 @@
       }
 
       changePwdForm.reset();
-      showToast('🔒 Kata sandi admin berhasil diperbarui!', true);
+      showToast('Kata sandi admin berhasil diperbarui!', true, '🔒');
     });
   }
 
@@ -196,7 +196,7 @@
       if (localData) {
         try {
           currentData = JSON.parse(localData);
-        } catch (e) {}
+        } catch (e) { }
       }
     }
 
@@ -1059,7 +1059,7 @@
       if (navLinks.length > 0) {
         const mapped = navLinks.map(n => ({ id: 'fm' + Date.now() + Math.random(), title: n.title, url: n.url }));
         renderFooterLinks(mapped);
-        showToast('📋 Link navbar berhasil disalin ke menu footer!');
+        showToast('Link navbar berhasil disalin ke menu footer!');
       } else {
         alert('Menu navbar masih kosong!');
       }
@@ -1075,7 +1075,7 @@
       const wendLbl = getVal('footer-hours-wend-label-input', 'Sabtu – Minggu');
       setVal('footer-hours-wday-time-input', stripDayPrefix(rawWday, wdayLbl) || '09:00 – 17:00 WIB');
       setVal('footer-hours-wend-time-input', stripDayPrefix(rawWend, wendLbl) || 'Tutup (Layanan Darurat On-Call)');
-      showToast('🕒 Jam operasional dari modul Kontak berhasil disalin ke Footer (tanpa duplikasi)!');
+      showToast('Jam operasional dari modul Kontak berhasil disalin ke Footer (tanpa duplikasi)!');
     });
   }
 
@@ -1121,7 +1121,7 @@
       if (addr) setVal('footer-contact-addr-input', addr);
       if (phone) setVal('footer-contact-phone-input', phone);
       if (email) setVal('footer-contact-email-input', email);
-      showToast('📍 Info alamat & kontak berhasil disalin ke Footer!');
+      showToast('Info alamat & kontak berhasil disalin ke Footer!');
     });
   }
 
@@ -1142,7 +1142,7 @@
       setVal('footer-logo-url-input', navLogoUrl);
       const prev = document.getElementById('footer-logo-preview');
       if (prev) prev.src = navLogoUrl;
-      showToast('🖼️ Logo dari navbar berhasil disalin ke Footer!');
+      showToast('Logo dari navbar berhasil disalin ke Footer!');
     });
   }
 
@@ -1329,9 +1329,9 @@
       `;
 
       if (serverSaved) {
-        showToast('✅ Berhasil disimpan permanen ke server & landing page!', true);
+        showToast('Berhasil disimpan permanen ke server & landing page!', true);
       } else {
-        showToast('✅ Berhasil disimpan ke browser & landing page!', true);
+        showToast('Berhasil disimpan ke browser & landing page!', true);
       }
     }, 400);
   }
@@ -1342,10 +1342,21 @@
   // 7. TOAST NOTIFICATION
   // ==========================================
   let toastTimer = null;
-  function showToast(msg, isSuccess = true) {
+  function showToast(msg, isSuccess = true, customIcon = null) {
     if (!toastEl) return;
-    toastMsg.textContent = msg;
-    document.getElementById('toast-icon').textContent = isSuccess ? '✅' : '⚠️';
+    const iconEl = document.getElementById('toast-icon');
+
+    // Bersihkan emoji di awal teks pesan agar tidak ganda dengan toast-icon
+    let cleanMsg = msg;
+    let icon = customIcon || (isSuccess ? '✅' : '⚠️');
+    const emojiMatch = msg.match(/^(\p{Extended_Pictographic}|\p{Emoji_Presentation}|[✅⚠️🔒📋🕒📍🖼️📥])\s*/u);
+    if (emojiMatch) {
+      if (!customIcon) icon = emojiMatch[1];
+      cleanMsg = msg.substring(emojiMatch[0].length);
+    }
+
+    if (iconEl) iconEl.textContent = icon;
+    if (toastMsg) toastMsg.textContent = cleanMsg;
 
     toastEl.classList.remove('translate-y-[-100px]', 'opacity-0');
     toastEl.classList.add('translate-y-0', 'opacity-100');
@@ -1372,7 +1383,7 @@
       a.download = `ids-site-data-backup-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast('📥 File backup berhasil diunduh!');
+      showToast('File backup berhasil diunduh!');
     });
   }
 
@@ -1389,7 +1400,7 @@
           currentData = parsed;
           populateAllFields(parsed);
           saveAllData();
-          showToast('📥 Data berhasil dipulihkan dari file backup!');
+          showToast('Data berhasil dipulihkan dari file backup!');
         } catch (err) {
           alert('Format file JSON tidak valid!');
         }
