@@ -68,6 +68,13 @@ document.addEventListener("click", (e) => {
   }
 });
 
+// Jika halaman dimuat dengan hash #hero, pastikan selalu di posisi puncak absolut
+if (window.location.hash === '#hero') {
+  window.addEventListener('DOMContentLoaded', () => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  });
+}
+
 // ========================
 // Active nav link on scroll
 // ========================
