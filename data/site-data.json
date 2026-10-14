@@ -337,10 +337,10 @@
     "email": "info@ids.net.id"
   },
   "aiAutomation": {
-    "enabled": false,
+    "enabled": true,
     "provider": "gemini",
     "apiKey": "",
-    "model": "gemini-1.5-flash",
+    "model": "gemini-1.5-flash-latest",
     "frequency": "daily",
     "targetRegion": "Medan, Binjai, Langkat, Deli Serdang, Sumatera Utara",
     "focusTopics": "Internet Dedicated, Fiber Optic, Local Loop, Dark Fiber, Managed IT Solutions",
@@ -348,7 +348,7 @@
     "autoUpdateAiSummary": true,
     "autoUpdateFaq": true,
     "lastRun": null,
-    "lastStatus": "Nonaktif (Dimatikan oleh admin)"
+    "lastStatus": "Aktif (Menunggu jadwal optimasi pertama)"
   },
   "adminPassword": "admin123"
 }

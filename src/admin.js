@@ -1267,8 +1267,12 @@
 
     if (provider === 'gemini') {
       modelSelect.innerHTML = `
-        <option value="gemini-1.5-flash">gemini-1.5-flash (Direkomendasikan - Cepat & Efisien)</option>
-        <option value="gemini-1.5-pro">gemini-1.5-pro (Analisis Mendalam)</option>
+        <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest (Paling Cepat &amp; Stabil)</option>
+        <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+        <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+        <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+        <option value="gemini-1.5-pro-latest">gemini-1.5-pro-latest (Analisis Mendalam)</option>
+        <option value="gemini-pro">gemini-pro</option>
       `;
       if (helpLink) {
         helpLink.href = 'https://aistudio.google.com/app/apikey';

@@ -353,29 +353,97 @@ Output WAJIB berupa JSON MURNI (valid JSON) persis dengan format berikut tanpa t
   let rawJsonText = '';
 
   if (provider === 'gemini') {
-    const model = config.model || 'gemini-1.5-flash';
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(config.apiKey.trim())}`;
-    
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          responseMimeType: 'application/json',
-          temperature: 0.7
-        }
-      })
-    });
+    const apiKey = config.apiKey.trim();
+    let requestedModel = (config.model || '').replace(/^models\//, '').trim();
 
-    const resData = await res.json();
-    if (resData.error) {
-      throw new Error(`Google Gemini Error: ${resData.error.message || JSON.stringify(resData.error)}`);
+    // Urutan prioritas model yang akan dicoba
+    let candidateModels = [
+      requestedModel,
+      'gemini-1.5-flash-latest',
+      'gemini-1.5-flash',
+      'gemini-2.5-flash',
+      'gemini-2.0-flash',
+      'gemini-1.5-flash-8b',
+      'gemini-1.5-pro-latest',
+      'gemini-1.5-pro',
+      'gemini-pro'
+    ].filter(Boolean);
+    candidateModels = [...new Set(candidateModels)];
+
+    // Coba query ListModels dari Google untuk mendapatkan model spesifik yang diizinkan untuk API Key ini
+    try {
+      const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
+      if (listRes.ok) {
+        const listData = await listRes.json();
+        if (Array.isArray(listData.models) && listData.models.length > 0) {
+          const supported = listData.models
+            .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+            .map(m => m.name.replace(/^models\//, ''));
+
+          if (supported.length > 0) {
+            // Tempatkan model flash di paling depan
+            const flashModels = supported.filter(m => m.includes('flash'));
+            const otherModels = supported.filter(m => !m.includes('flash'));
+            candidateModels = [...new Set([requestedModel, ...flashModels, ...otherModels, ...candidateModels].filter(Boolean))];
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Gagal memanggil listModels Gemini, lanjut dengan kandidat standar:', e.message);
     }
 
-    rawJsonText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!rawJsonText) {
-      throw new Error('Tidak ada respon konten dari Google Gemini.');
+    let lastError = null;
+    let success = false;
+
+    // Iterasi model-model kandidat dan versi API (v1beta & v1)
+    for (const modelToTry of candidateModels) {
+      for (const apiVer of ['v1beta', 'v1']) {
+        try {
+          const endpoint = `https://generativelanguage.googleapis.com/${apiVer}/models/${modelToTry}:generateContent?key=${encodeURIComponent(apiKey)}`;
+          
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: {
+                responseMimeType: 'application/json',
+                temperature: 0.7
+              }
+            })
+          });
+
+          const resData = await res.json();
+          if (resData.error) {
+            lastError = new Error(`Google Gemini Error (${modelToTry}): ${resData.error.message || JSON.stringify(resData.error)}`);
+            // Jika error adalah 404 (model not found), coba model berikutnya
+            if (resData.error.code === 404 || (resData.error.message && resData.error.message.includes('not found'))) {
+              continue;
+            } else {
+              // Jika error lain (misal: API key salah/kuota habis), langsung laporkan
+              throw lastError;
+            }
+          }
+
+          rawJsonText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (rawJsonText) {
+            success = true;
+            config.model = modelToTry; // Simpan model yang sukses digunakan
+            break;
+          }
+        } catch (err) {
+          lastError = err;
+          if (err.message && (err.message.includes('not found') || err.message.includes('404'))) {
+            continue;
+          }
+          throw err;
+        }
+      }
+      if (success) break;
+    }
+
+    if (!success) {
+      throw lastError || new Error('Tidak ada model Gemini yang dapat digunakan dengan API Key ini. Pastikan Generative Language API aktif di Google AI Studio.');
     }
   } else if (provider === 'openai') {
     const model = config.model || 'gpt-4o-mini';
