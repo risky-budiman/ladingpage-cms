@@ -356,13 +356,13 @@ Output WAJIB berupa JSON MURNI (valid JSON) persis dengan format berikut tanpa t
     const apiKey = config.apiKey.trim();
     let requestedModel = (config.model || '').replace(/^models\//, '').trim();
 
-    // Urutan prioritas model yang akan dicoba
+    // Urutan prioritas model text yang akan dicoba
     let candidateModels = [
       requestedModel,
       'gemini-1.5-flash-latest',
       'gemini-1.5-flash',
-      'gemini-2.5-flash',
       'gemini-2.0-flash',
+      'gemini-2.5-flash',
       'gemini-1.5-flash-8b',
       'gemini-1.5-pro-latest',
       'gemini-1.5-pro',
@@ -370,18 +370,27 @@ Output WAJIB berupa JSON MURNI (valid JSON) persis dengan format berikut tanpa t
     ].filter(Boolean);
     candidateModels = [...new Set(candidateModels)];
 
-    // Coba query ListModels dari Google untuk mendapatkan model spesifik yang diizinkan untuk API Key ini
+    // Coba query ListModels dari Google untuk mendapatkan model teks spesifik yang diizinkan untuk API Key ini
     try {
       const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
       if (listRes.ok) {
         const listData = await listRes.json();
         if (Array.isArray(listData.models) && listData.models.length > 0) {
+          // FILTER: HANYA model yang mendukung generateContent DAN BUKAN model TTS/Audio/Vision-only/Embedding
           const supported = listData.models
             .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
-            .map(m => m.name.replace(/^models\//, ''));
+            .map(m => m.name.replace(/^models\//, ''))
+            .filter(name => {
+              const lower = name.toLowerCase();
+              return !lower.includes('tts') && 
+                     !lower.includes('audio') && 
+                     !lower.includes('embed') && 
+                     !lower.includes('image') && 
+                     !lower.includes('vision');
+            });
 
           if (supported.length > 0) {
-            // Tempatkan model flash di paling depan
+            // Prioritaskan model flash teks murni
             const flashModels = supported.filter(m => m.includes('flash'));
             const otherModels = supported.filter(m => !m.includes('flash'));
             candidateModels = [...new Set([requestedModel, ...flashModels, ...otherModels, ...candidateModels].filter(Boolean))];
@@ -391,6 +400,12 @@ Output WAJIB berupa JSON MURNI (valid JSON) persis dengan format berikut tanpa t
     } catch (e) {
       console.warn('Gagal memanggil listModels Gemini, lanjut dengan kandidat standar:', e.message);
     }
+
+    // Pastikan tidak ada model TTS di kandidat akhir
+    candidateModels = candidateModels.filter(name => {
+      const lower = name.toLowerCase();
+      return !lower.includes('tts') && !lower.includes('audio') && !lower.includes('embed');
+    });
 
     let lastError = null;
     let success = false;
@@ -416,34 +431,36 @@ Output WAJIB berupa JSON MURNI (valid JSON) persis dengan format berikut tanpa t
           const resData = await res.json();
           if (resData.error) {
             lastError = new Error(`Google Gemini Error (${modelToTry}): ${resData.error.message || JSON.stringify(resData.error)}`);
-            // Jika error adalah 404 (model not found), coba model berikutnya
-            if (resData.error.code === 404 || (resData.error.message && resData.error.message.includes('not found'))) {
-              continue;
-            } else {
-              // Jika error lain (misal: API key salah/kuota habis), langsung laporkan
+            // Jika error adalah API key tidak valid / permission denied global, langsung laporkan
+            if (resData.error.message?.includes('API_KEY_INVALID') || resData.error.message?.includes('API key not valid')) {
               throw lastError;
             }
+            // Untuk error per-model (misal 404 not found, modality not supported, etc.), lanjutkan ke model berikutnya!
+            console.log(`[Gemini] Model ${modelToTry} (${apiVer}) gagal: ${resData.error.message}. Mencoba model alternatif...`);
+            continue;
           }
 
           rawJsonText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
           if (rawJsonText) {
             success = true;
             config.model = modelToTry; // Simpan model yang sukses digunakan
+            console.log(`[Gemini] Sukses menggunakan model: ${modelToTry} (${apiVer})`);
             break;
           }
         } catch (err) {
           lastError = err;
-          if (err.message && (err.message.includes('not found') || err.message.includes('404'))) {
-            continue;
+          if (err.message?.includes('API_KEY_INVALID') || err.message?.includes('API key not valid')) {
+            throw err;
           }
-          throw err;
+          console.log(`[Gemini] Error mencoba ${modelToTry} (${apiVer}): ${err.message}. Mencoba model alternatif...`);
+          continue;
         }
       }
       if (success) break;
     }
 
     if (!success) {
-      throw lastError || new Error('Tidak ada model Gemini yang dapat digunakan dengan API Key ini. Pastikan Generative Language API aktif di Google AI Studio.');
+      throw lastError || new Error('Tidak ada model Gemini teks yang dapat digunakan dengan API Key ini. Pastikan Generative Language API aktif di Google AI Studio.');
     }
   } else if (provider === 'openai') {
     const model = config.model || 'gpt-4o-mini';

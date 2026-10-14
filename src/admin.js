@@ -1415,6 +1415,25 @@
         <span>Sedang Menganalisis &amp; Mengoptimasi Konten...</span>
       `;
 
+      // Tampilkan Modal Loading Visual Layar Penuh
+      const aiLoadingModal = document.getElementById('ai-loading-modal');
+      const aiLoadingStepText = document.getElementById('ai-loading-step-text');
+      const aiModalProgress = document.getElementById('ai-modal-progress');
+
+      if (aiLoadingModal) aiLoadingModal.classList.remove('hidden');
+      if (aiLoadingStepText) aiLoadingStepText.textContent = 'Menghubungkan ke API Google Gemini...';
+      if (aiModalProgress) aiModalProgress.style.width = '35%';
+
+      const stepTimer1 = setTimeout(() => {
+        if (aiLoadingStepText) aiLoadingStepText.textContent = 'Menganalisis kata kunci & kompetitor regional...';
+        if (aiModalProgress) aiModalProgress.style.width = '65%';
+      }, 1400);
+
+      const stepTimer2 = setTimeout(() => {
+        if (aiLoadingStepText) aiLoadingStepText.textContent = 'Meracik Meta Title, Description CTR Tinggi & FAQ...';
+        if (aiModalProgress) aiModalProgress.style.width = '90%';
+      }, 2800);
+
       try {
         const res = await fetch('/api/ai-optimize', {
           method: 'POST',
@@ -1446,12 +1465,16 @@
           }
 
           outDetails.innerHTML = `
+            <div><span class="font-bold text-emerald-900">Model AI Terpakai:</span> <span class="font-mono text-emerald-700 font-bold">${data.modelUsed || config.model}</span></div>
             <div><span class="font-bold text-emerald-900">Judul Baru:</span> ${data.aiResult.siteTitle || '-'}</div>
             <div><span class="font-bold text-emerald-900">Deskripsi:</span> ${data.aiResult.metaDescription || '-'}</div>
             <div><span class="font-bold text-emerald-900">Keywords:</span> <span class="font-mono text-[11px]">${data.aiResult.keywords || '-'}</span></div>
             <div><span class="font-bold text-emerald-900">Ringkasan AI:</span> ${data.aiResult.aiSearchSummary || '-'}</div>
             ${faqHtml}
           `;
+
+          // Auto-scroll ke hasil preview agar user langsung melihat
+          outContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         // Sinkronkan ke form SEO langsung jika dipilih
@@ -1470,7 +1493,7 @@
 
         // Update status & last run UI
         config.lastRun = data.lastRun || new Date().toISOString();
-        config.lastStatus = data.message || 'Sukses dioptimasi oleh AI';
+        config.lastStatus = `Sukses diperbarui oleh ${data.modelUsed || config.model}`;
         updateAiStatusUI(config);
 
         showToast('⚡ AI Berhasil mengoptimasi SEO & konten website!', true, '🤖');
@@ -1478,6 +1501,9 @@
         console.error('Error run AI now:', err);
         alert('Gagal mengeksekusi AI Optimasi: ' + err.message);
       } finally {
+        clearTimeout(stepTimer1);
+        clearTimeout(stepTimer2);
+        if (aiLoadingModal) aiLoadingModal.classList.add('hidden');
         btnRunAiNow.disabled = false;
         btnRunAiNow.innerHTML = originalText;
       }

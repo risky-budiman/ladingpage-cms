@@ -12,7 +12,7 @@
 
   <base href="/" />
   <link rel="icon" href="/images/favicon.ico" />
-  <link rel="stylesheet" href="/dist/output.css?v=2.2" />
+  <link rel="stylesheet" href="/dist/output.css?v=3.5" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -135,6 +135,37 @@
             &larr; Kembali ke Landing Page Publik
           </a>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================
+       MODAL LOADING PROSES AI
+  ========================= -->
+  <div id="ai-loading-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4 hidden transition-all duration-300">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-100 max-w-md w-full p-8 text-center relative overflow-hidden animate-fade-in-up">
+      <div class="absolute -top-20 -right-20 w-44 h-44 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-20 -left-20 w-44 h-44 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <!-- Icon Robot Animated Pulse -->
+      <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-purple-600 to-blue-500 flex items-center justify-center text-4xl shadow-xl shadow-purple-500/30 mb-5 animate-pulse select-none">
+        🤖
+      </div>
+
+      <h3 class="text-xl font-black text-slate-900 mb-2">AI Sedang Mengoptimasi Halaman...</h3>
+      <p class="text-xs text-slate-500 mb-6 leading-relaxed">
+        Model AI sedang menganalisis kata kunci, meracik meta tags dengan CTR tinggi, dan merumuskan FAQ terbaru.
+      </p>
+
+      <!-- Animated Progress Bar -->
+      <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden mb-5">
+        <div id="ai-modal-progress" class="bg-gradient-to-r from-purple-600 via-blue-500 to-emerald-400 h-2.5 rounded-full w-2/3 animate-pulse transition-all duration-500"></div>
+      </div>
+
+      <!-- Step Status Live Text -->
+      <div class="flex items-center justify-center gap-2.5 text-xs font-semibold text-purple-700 bg-purple-50 py-3 px-4 rounded-xl border border-purple-200">
+        <svg class="w-4 h-4 animate-spin text-purple-600 flex-shrink-0" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+        <span id="ai-loading-step-text">Menghubungkan ke API Google Gemini...</span>
       </div>
     </div>
   </div>
