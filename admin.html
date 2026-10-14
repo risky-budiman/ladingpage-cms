@@ -35,6 +35,54 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: #94a3b8;
     }
+
+    /* Custom Toggle Switch (Anti-Glitch / Pure CSS) */
+    .switch-toggle {
+      position: relative;
+      display: inline-block;
+      width: 58px;
+      height: 32px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .switch-toggle input {
+      opacity: 0 !important;
+      width: 0 !important;
+      height: 0 !important;
+      position: absolute !important;
+      pointer-events: none;
+    }
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cbd5e1;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 9999px;
+      border: 1px solid #94a3b8;
+    }
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #ffffff;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+    .switch-toggle input:checked + .switch-slider {
+      background-color: #10b981;
+      border-color: #059669;
+    }
+    .switch-toggle input:checked + .switch-slider:before {
+      transform: translateX(26px);
+    }
   </style>
 </head>
 
@@ -638,11 +686,11 @@
                 </p>
               </div>
 
-              <!-- Big Switch Toggle -->
-              <div class="flex items-center gap-3 self-start sm:self-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                <label for="ai-master-toggle" class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" id="ai-master-toggle" class="sr-only peer">
-                  <div class="w-14 h-8 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+              <!-- Big Switch Toggle (Bulletproof Pure CSS) -->
+              <div class="flex items-center gap-3 self-start sm:self-center bg-slate-50 p-2.5 sm:p-3 rounded-2xl border border-slate-200">
+                <label class="switch-toggle" for="ai-master-toggle" title="Klik untuk mengaktifkan / mematikan Otomasi AI">
+                  <input type="checkbox" id="ai-master-toggle">
+                  <span class="switch-slider"></span>
                 </label>
                 <span id="ai-toggle-label" class="text-sm font-extrabold text-slate-500 w-12">OFF</span>
               </div>
